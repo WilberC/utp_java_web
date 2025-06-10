@@ -90,6 +90,47 @@ To clean the database (WARNING: This will delete all data):
 mvn flyway:clean
 ```
 
+### Seed Data
+
+The project includes comprehensive seed data in Spanish for development and testing purposes. The seed data is automatically applied when running migrations and includes:
+
+#### Users (10 total)
+- **1 Admin user**: `admin@utp.edu.pe` / `mypassword123`
+- **9 Customer users** with various statuses (ACTIVE, INACTIVE, SUSPENDED)
+- All users share the same password: `mypassword123`
+
+#### Categories (10 total)
+- Electrónicos, Libros, Ropa, Hogar y Jardín, Deportes y Aire Libre
+- Juguetes y Juegos, Salud y Belleza, Automotriz, Alimentos y Bebidas, Suministros de Oficina
+
+#### Products (20 total)
+- Electronics: Laptops, smartphones, headphones
+- Books: Programming books (Clean Code, Design Patterns, Spring Boot)
+- Clothing: T-shirts, jeans, running shoes
+- Various other products across all categories
+- All product descriptions and names are in Spanish
+
+#### Orders (10 total)
+- Various order statuses: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+- Different payment methods: CREDIT_CARD, BANK_TRANSFER, CASH_ON_DELIVERY
+- Realistic order amounts and delivery dates
+
+#### Additional Data
+- **Payment Transactions**: 8 transactions with various statuses
+- **Email Templates**: 5 templates in Spanish (welcome, order confirmation, shipping, password reset, promotional)
+- **Notifications**: 15 notifications for order updates
+- **User Notification Preferences**: Preferences for all users
+- **Report Refresh Logs**: 30 log entries for analytics
+
+#### Sample Login Credentials
+```
+Admin:     admin@utp.edu.pe / mypassword123
+Customer:  juan.perez@email.com / mypassword123
+Customer:  maria.garcia@email.com / mypassword123
+```
+
+The seed data provides a realistic e-commerce environment for testing all application features including user management, product catalog, order processing, and reporting.
+
 ### Database Connection Details
 
 - Host: localhost

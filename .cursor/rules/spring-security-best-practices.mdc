@@ -1,0 +1,14 @@
+---
+description: 
+globs: **/*.java
+alwaysApply: false
+---
+---
+name: spring-security-best-practices.mdc
+description: Best practices for Spring Security with JWT
+globs: **/*.java
+---
+- Use stateless authentication with JWT for REST APIs.
+- Implement role-based access control for securing endpoints.
+- Store JWT securely and use HTTPS to protect token transmission.
+- Regularly rotate JWT signing keys for enhanced security.

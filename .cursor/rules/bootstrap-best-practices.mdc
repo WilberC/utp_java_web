@@ -1,0 +1,14 @@
+---
+description: 
+globs: **/*.html
+alwaysApply: false
+---
+---
+name: bootstrap-best-practices.mdc
+description: Best practices for Bootstrap styling and layout
+globs: **/*.html
+---
+- Use Bootstrap's grid system for responsive layouts.
+- Utilize utility classes for quick styling adjustments.
+- Keep custom CSS minimal to avoid conflicts with Bootstrap styles.
+- Ensure accessibility by using ARIA roles and attributes.

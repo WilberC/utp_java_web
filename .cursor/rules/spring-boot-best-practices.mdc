@@ -1,0 +1,19 @@
+---
+description: 
+globs: **/*.java
+alwaysApply: false
+---
+---
+name: spring-boot-best-practices.mdc
+description: Best practices for Spring Boot applications
+globs: **/*.java
+---
+- Use Spring Boot's auto-configuration to reduce boilerplate code.
+- Structure your application using layers (Controller, Service, Repository).
+- Leverage Spring Profiles for environment-specific configurations.
+- Use @Transactional for managing transactions effectively.
+- Always use an ORM (like Hibernate) to connect with PostgreSQL for better abstraction and easier data manipulation.
+- Implement proper exception handling using @ControllerAdvice.
+- Use Spring Profiles for environment-specific configurations.
+- Leverage Spring Security for authentication and authorization.
+- Keep your services stateless to improve scalability.

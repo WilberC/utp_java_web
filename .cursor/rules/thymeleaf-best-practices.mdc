@@ -1,0 +1,15 @@
+---
+description: 
+globs: **/*.html
+alwaysApply: false
+---
+---
+name: thymeleaf-best-practices.mdc
+description: Best practices for Thymeleaf templating
+globs: **/*.html
+---
+
+- Use the `th:each` attribute for iterating over collections efficiently.
+- Keep templates clean by separating logic from presentation.
+- Utilize fragment templates for reusable components.
+- Ensure proper escaping of user input to prevent XSS attacks.
