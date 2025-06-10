@@ -129,9 +129,9 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>${flyway.version}</version>
                 <configuration>
-                    <url>jdbc:postgresql://localhost:5432/utp_web_dev</url>
-                    <user>utp_user</user>
-                    <password>utp_password</password>
+                    <url>jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}</url>
+                    <user>${DB_USERNAME}</user>
+                    <password>${DB_PASSWORD}</password>
                     <schemas>public</schemas>
                     <baselineOnMigrate>true</baselineOnMigrate>
                 </configuration>

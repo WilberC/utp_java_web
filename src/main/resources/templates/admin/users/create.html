@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario - UTP Web Development</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-person-plus"></i>
+                Crear Nuevo Usuario
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <a href="/admin/users" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a la Lista
+                </a>
+            </div>
+        </div>
+
+        <!-- Create User Form -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-plus"></i>
+                            Información del Usuario
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/users/create}" th:object="${user}" method="post">
+                            
+                            <!-- Personal Information -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h6 class="text-primary mb-3">
+                                        <i class="bi bi-person"></i>
+                                        Información Personal
+                                    </h6>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Nombre Completo *</label>
+                                    <input type="text" class="form-control" id="name" th:field="*{name}" 
+                                           th:classappend="${#fields.hasErrors('name')} ? 'is-invalid' : ''"
+                                           placeholder="Ingrese el nombre completo">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">
+                                        Error en el nombre
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" 
+                                           th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''"
+                                           placeholder="ejemplo@email.com">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">
+                                        Error en el email
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="phone" class="form-label">Teléfono *</label>
+                                    <input type="tel" class="form-control" id="phone" th:field="*{phone}" 
+                                           th:classappend="${#fields.hasErrors('phone')} ? 'is-invalid' : ''"
+                                           placeholder="+51 999 123 456">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}">
+                                        Error en el teléfono
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="address" class="form-label">Dirección *</label>
+                                    <input type="text" class="form-control" id="address" th:field="*{address}" 
+                                           th:classappend="${#fields.hasErrors('address')} ? 'is-invalid' : ''"
+                                           placeholder="Ingrese la dirección completa">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">
+                                        Error en la dirección
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Account Information -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h6 class="text-primary mb-3">
+                                        <i class="bi bi-shield-lock"></i>
+                                        Información de la Cuenta
+                                    </h6>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="password" class="form-label">Contraseña *</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="password" th:field="*{password}" 
+                                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
+                                               placeholder="Mínimo 6 caracteres">
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">
+                                        Error en la contraseña
+                                    </div>
+                                    <div class="form-text">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle"></i>
+                                            La contraseña debe tener al menos 6 caracteres
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="role" class="form-label">Rol *</label>
+                                    <select class="form-select" id="role" th:field="*{role}" 
+                                            th:classappend="${#fields.hasErrors('role')} ? 'is-invalid' : ''">
+                                        <option value="">Seleccione un rol</option>
+                                        <option th:each="role : ${userRoles}" 
+                                                th:value="${role}" 
+                                                th:text="${role == T(com.utp.webdevelopment.model.enums.UserRole).ADMIN ? 'Administrador' : 'Cliente'}">
+                                            Cliente
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:errors="*{role}">
+                                        Error en el rol
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Status and Verification -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h6 class="text-primary mb-3">
+                                        <i class="bi bi-gear"></i>
+                                        Estado y Verificación
+                                    </h6>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <label for="status" class="form-label">Estado</label>
+                                    <select class="form-select" id="status" th:field="*{status}">
+                                        <option value="ACTIVE">Activo</option>
+                                        <option value="INACTIVE">Inactivo</option>
+                                        <option value="SUSPENDED">Suspendido</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" id="emailVerified" 
+                                               th:field="*{emailVerified}">
+                                        <label class="form-check-label" for="emailVerified">
+                                            Email Verificado
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4 mb-3">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" id="phoneVerified" 
+                                               th:field="*{phoneVerified}">
+                                        <label class="form-check-label" for="phoneVerified">
+                                            Teléfono Verificado
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <hr class="my-4">
+                                    <div class="d-flex justify-content-between">
+                                        <a href="/admin/users" class="btn btn-secondary">
+                                            <i class="bi bi-x-circle"></i>
+                                            Cancelar
+                                        </a>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-check-circle"></i>
+                                            Crear Usuario
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Card -->
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-8">
+                <div class="card border-info">
+                    <div class="card-header bg-info text-white">
+                        <h6 class="mb-0">
+                            <i class="bi bi-question-circle"></i>
+                            Información de Ayuda
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <ul class="mb-0">
+                            <li><strong>Nombre:</strong> Ingrese el nombre completo del usuario</li>
+                            <li><strong>Email:</strong> Debe ser un email válido y único en el sistema</li>
+                            <li><strong>Teléfono:</strong> Formato recomendado: +51 999 123 456</li>
+                            <li><strong>Contraseña:</strong> Mínimo 6 caracteres, se encriptará automáticamente</li>
+                            <li><strong>Rol:</strong> Administrador tiene acceso completo, Cliente acceso limitado</li>
+                            <li><strong>Estado:</strong> Activo (normal), Inactivo (temporal), Suspendido (bloqueado)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const password = document.getElementById('password');
+            const icon = this.querySelector('i');
+            
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                password.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        });
+
+        // Auto-format phone number
+        document.getElementById('phone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value.length <= 2) {
+                    value = '+' + value;
+                } else if (value.length <= 5) {
+                    value = '+' + value.substring(0, 2) + ' ' + value.substring(2);
+                } else if (value.length <= 8) {
+                    value = '+' + value.substring(0, 2) + ' ' + value.substring(2, 5) + ' ' + value.substring(5);
+                } else {
+                    value = '+' + value.substring(0, 2) + ' ' + value.substring(2, 5) + ' ' + value.substring(5, 8) + ' ' + value.substring(8, 12);
+                }
+            }
+            e.target.value = value;
+        });
+    </script>
+</body>
+</html> 

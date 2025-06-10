@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Dashboard - UTP Web Development</title>
+</head>
+<body>
+    <!-- Dashboard Content Fragment -->
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-speedometer2"></i>
+                Dashboard
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-download"></i>
+                        Exportar
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-printer"></i>
+                        Imprimir
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalUsers}">0</div>
+                    <div class="stats-label">Usuarios</div>
+                    <i class="bi bi-people position-absolute top-0 end-0 mt-3 me-3 opacity-25" style="font-size: 3rem;"></i>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalProducts}">0</div>
+                    <div class="stats-label">Productos</div>
+                    <i class="bi bi-box position-absolute top-0 end-0 mt-3 me-3 opacity-25" style="font-size: 3rem;"></i>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalCategories}">0</div>
+                    <div class="stats-label">Categorías</div>
+                    <i class="bi bi-tags position-absolute top-0 end-0 mt-3 me-3 opacity-25" style="font-size: 3rem;"></i>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${featuredProducts}">0</div>
+                    <div class="stats-label">Destacados</div>
+                    <i class="bi bi-star position-absolute top-0 end-0 mt-3 me-3 opacity-25" style="font-size: 3rem;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning"></i>
+                            Acciones Rápidas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <a href="/admin/users/create" class="btn btn-primary w-100">
+                                    <i class="bi bi-person-plus"></i>
+                                    <br>
+                                    Nuevo Usuario
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/admin/products/create" class="btn btn-success w-100">
+                                    <i class="bi bi-plus-circle"></i>
+                                    <br>
+                                    Nuevo Producto
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/admin/categories/create" class="btn btn-info w-100">
+                                    <i class="bi bi-tag"></i>
+                                    <br>
+                                    Nueva Categoría
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/admin/reports" class="btn btn-warning w-100">
+                                    <i class="bi bi-graph-up"></i>
+                                    <br>
+                                    Ver Reportes
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history"></i>
+                            Actividad Reciente
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Nuevo usuario registrado</h6>
+                                    <small class="text-muted">Juan Pérez se registró en el sistema</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">Hace 2h</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Producto agregado</h6>
+                                    <small class="text-muted">Laptop HP Pavilion 15 fue agregado al catálogo</small>
+                                </div>
+                                <span class="badge bg-success rounded-pill">Hace 4h</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Pedido completado</h6>
+                                    <small class="text-muted">Pedido #1234 fue entregado exitosamente</small>
+                                </div>
+                                <span class="badge bg-info rounded-pill">Hace 6h</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Stock bajo</h6>
+                                    <small class="text-muted">iPhone 15 Pro tiene stock bajo</small>
+                                </div>
+                                <span class="badge bg-warning rounded-pill">Hace 8h</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up"></i>
+                            Estadísticas Rápidas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="border-end">
+                                    <h4 class="text-primary" th:text="${totalUsers}">0</h4>
+                                    <small class="text-muted">Usuarios Activos</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h4 class="text-success" th:text="${totalProducts}">0</h4>
+                                <small class="text-muted">Productos</small>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="border-end">
+                                    <h4 class="text-info" th:text="${totalCategories}">0</h4>
+                                    <small class="text-muted">Categorías</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <h4 class="text-warning" th:text="${featuredProducts}">0</h4>
+                                <small class="text-muted">Destacados</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

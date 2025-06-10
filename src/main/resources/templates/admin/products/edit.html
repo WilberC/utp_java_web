@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Editar Producto - UTP Web Development</title>
+</head>
+<body>
+    <!-- Product Edit Form Fragment -->
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-pencil"></i>
+                Editar Producto
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <a href="/admin/products" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a Productos
+                </a>
+            </div>
+        </div>
+
+        <!-- Edit Form -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box"></i>
+                            Información del Producto
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/admin/products/{id}/edit(id=${product.id})}" th:object="${product}" method="post">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="name" class="form-label">Nombre del Producto *</label>
+                                    <input type="text" class="form-control" id="name" th:field="*{name}" 
+                                           placeholder="Ingrese el nombre del producto" required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="barcode" class="form-label">Código de Barras</label>
+                                    <input type="text" class="form-control" id="barcode" th:field="*{barcode}" 
+                                           placeholder="Código de barras (opcional)">
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('barcode')}" th:errors="*{barcode}"></div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="price" class="form-label">Precio *</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">S/</span>
+                                        <input type="number" class="form-control" id="price" th:field="*{price}" 
+                                               step="0.01" min="0" placeholder="0.00" required>
+                                    </div>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="stock" class="form-label">Stock *</label>
+                                    <input type="number" class="form-control" id="stock" th:field="*{stock}" 
+                                           min="0" placeholder="0" required>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="category" class="form-label">Categoría *</label>
+                                    <select class="form-select" id="category" th:field="*{category}" required>
+                                        <option value="">Seleccione una categoría</option>
+                                        <option th:each="cat : ${categories}" 
+                                                th:value="${cat.id}" 
+                                                th:text="${cat.name}"
+                                                th:selected="${cat.id == product.category.id}">
+                                            Categoría
+                                        </option>
+                                    </select>
+                                    <div class="invalid-feedback" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="lowStockThreshold" class="form-label">Umbral de Stock Bajo</label>
+                                    <input type="number" class="form-control" id="lowStockThreshold" th:field="*{lowStockThreshold}" 
+                                           min="0" placeholder="10">
+                                    <div class="form-text">Cantidad mínima antes de mostrar alerta de stock bajo</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="description" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="description" th:field="*{description}" 
+                                          rows="4" placeholder="Descripción detallada del producto"></textarea>
+                                <div class="invalid-feedback" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="imageUrl" class="form-label">URL de Imagen</label>
+                                    <input type="url" class="form-control" id="imageUrl" th:field="*{imageUrl}" 
+                                           placeholder="https://ejemplo.com/imagen.jpg">
+                                    <div class="form-text">URL de la imagen del producto</div>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="status" class="form-label">Estado</label>
+                                    <select class="form-select" id="status" th:field="*{status}">
+                                        <option value="ACTIVE">Activo</option>
+                                        <option value="INACTIVE">Inactivo</option>
+                                        <option value="DISCONTINUED">Descontinuado</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="isFeatured" th:field="*{isFeatured}">
+                                    <label class="form-check-label" for="isFeatured">
+                                        Producto Destacado
+                                    </label>
+                                    <div class="form-text">Marcar como producto destacado en la tienda</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a href="/admin/products" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i>
+                                    Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i>
+                                    Actualizar Producto
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Info Card -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            Información del Producto
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>ID:</strong> <span th:text="${product.id}">1</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Creado:</strong> <span th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2024</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Última actualización:</strong> <span th:text="${#temporals.format(product.updatedAt, 'dd/MM/yyyy HH:mm')}">01/01/2024</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Estado:</strong> 
+                            <span class="badge" th:classappend="${product.status == 'ACTIVE' ? 'bg-success' : 'bg-warning'}" 
+                                  th:text="${product.status}">ACTIVE</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Destacado:</strong> 
+                            <span th:if="${product.isFeatured}" class="badge bg-warning">
+                                <i class="bi bi-star-fill"></i> Sí
+                            </span>
+                            <span th:unless="${product.isFeatured}" class="text-muted">
+                                <i class="bi bi-star"></i> No
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

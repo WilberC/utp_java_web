@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios - UTP Web Development</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-people"></i>
+                Gestión de Usuarios
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <a href="/admin/users/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    Nuevo Usuario
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalItems}">0</div>
+                    <div class="stats-label">Total de Usuarios</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${#lists.size(#arrays.asList(userRoles))}">2</div>
+                    <div class="stats-label">Tipos de Usuario</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalPages}">0</div>
+                    <div class="stats-label">Páginas</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${currentPage + 1}">1</div>
+                    <div class="stats-label">Página Actual</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/admin/users}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <div class="search-box">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" class="form-control" name="search" 
+                                   th:value="${search}" placeholder="Buscar usuarios...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="sortBy">
+                            <option value="name" th:selected="${sortBy == 'name'}">Nombre</option>
+                            <option value="email" th:selected="${sortBy == 'email'}">Email</option>
+                            <option value="role" th:selected="${sortBy == 'role'}">Rol</option>
+                            <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Fecha de Creación</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="sortDir">
+                            <option value="asc" th:selected="${sortDir == 'asc'}">Ascendente</option>
+                            <option value="desc" th:selected="${sortDir == 'desc'}">Descendente</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="size">
+                            <option value="5" th:selected="${size == 5}">5 por página</option>
+                            <option value="10" th:selected="${size == 10}">10 por página</option>
+                            <option value="25" th:selected="${size == 25}">25 por página</option>
+                            <option value="50" th:selected="${size == 50}">50 por página</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-funnel"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-table"></i>
+                    Lista de Usuarios
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Teléfono</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Verificado</th>
+                                <th>Fecha Creación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}">
+                                <td th:text="${user.id}">1</td>
+                                <td>
+                                    <strong th:text="${user.name}">Nombre</strong>
+                                </td>
+                                <td th:text="${user.email}">email@example.com</td>
+                                <td th:text="${user.phone}">+51 999 123 456</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${user.role == T(com.utp.webdevelopment.model.enums.UserRole).ADMIN ? 'bg-danger' : 'bg-success'}"
+                                          th:text="${user.role}">
+                                        CUSTOMER
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge status-badge" 
+                                          th:classappend="${user.status == 'ACTIVE' ? 'bg-success' : user.status == 'INACTIVE' ? 'bg-warning' : 'bg-danger'}"
+                                          th:text="${user.status}">
+                                        ACTIVE
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-1">
+                                        <span class="badge" 
+                                              th:classappend="${user.emailVerified ? 'bg-success' : 'bg-secondary'}"
+                                              title="Email verificado">
+                                            <i class="bi bi-envelope"></i>
+                                        </span>
+                                        <span class="badge" 
+                                              th:classappend="${user.phoneVerified ? 'bg-success' : 'bg-secondary'}"
+                                              title="Teléfono verificado">
+                                            <i class="bi bi-telephone"></i>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2024</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a th:href="@{/admin/users/{id}(id=${user.id})}" 
+                                           class="btn btn-sm btn-outline-primary"
+                                           data-bs-toggle="tooltip" 
+                                           title="Ver detalles">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" 
+                                           class="btn btn-sm btn-outline-warning"
+                                           data-bs-toggle="tooltip" 
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form th:action="@{/admin/users/{id}/delete(id=${user.id})}" 
+                                              method="post" 
+                                              style="display: inline;"
+                                              onsubmit="return confirmDelete('¿Está seguro de que desea eliminar el usuario ' + '[[${user.name}]]' + '?')">
+                                            <button type="submit" 
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    data-bs-toggle="tooltip" 
+                                                    title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(users)}">
+                                <td colspan="9" class="text-center py-4">
+                                    <i class="bi bi-inbox display-4 text-muted"></i>
+                                    <p class="mt-2 text-muted">No se encontraron usuarios</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav th:if="${totalPages > 1}" aria-label="Navegación de páginas">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/users(page=${currentPage - 1}, size=${size}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${pageNum == currentPage ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/users(page=${pageNum}, size=${size}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}"
+                               th:text="${pageNum + 1}">1</a>
+                        </li>
+                        
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/users(page=${currentPage + 1}, size=${size}, sortBy=${sortBy}, sortDir=${sortDir}, search=${search})}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

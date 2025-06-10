@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Productos - UTP Web Development</title>
+</head>
+<body>
+    <!-- Products List Content Fragment -->
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-box"></i>
+                Gestión de Productos
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a href="/admin/products/featured" class="btn btn-sm btn-outline-warning">
+                        <i class="bi bi-star"></i>
+                        Destacados
+                    </a>
+                    <a href="/admin/products/low-stock" class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        Stock Bajo
+                    </a>
+                </div>
+                <a href="/admin/products/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    Nuevo Producto
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalItems}">0</div>
+                    <div class="stats-label">Total de Productos</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${#lists.size(categories)}">0</div>
+                    <div class="stats-label">Categorías</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalPages}">0</div>
+                    <div class="stats-label">Páginas</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${currentPage + 1}">1</div>
+                    <div class="stats-label">Página Actual</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/admin/products}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <div class="search-box">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" class="form-control" name="search" 
+                                   th:value="${search}" placeholder="Buscar productos...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="categoryId">
+                            <option value="">Todas las categorías</option>
+                            <option th:each="category : ${categories}" 
+                                    th:value="${category.id}" 
+                                    th:text="${category.name}"
+                                    th:selected="${categoryId == category.id}">
+                                Categoría
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="sortBy">
+                            <option value="name" th:selected="${sortBy == 'name'}">Nombre</option>
+                            <option value="price" th:selected="${sortBy == 'price'}">Precio</option>
+                            <option value="stock" th:selected="${sortBy == 'stock'}">Stock</option>
+                            <option value="createdAt" th:selected="${sortBy == 'createdAt'}">Fecha</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="size">
+                            <option value="5" th:selected="${size == 5}">5 por página</option>
+                            <option value="10" th:selected="${size == 10}">10 por página</option>
+                            <option value="25" th:selected="${size == 25}">25 por página</option>
+                            <option value="50" th:selected="${size == 50}">50 por página</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-funnel"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-table"></i>
+                    Lista de Productos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Imagen</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Stock</th>
+                                <th>Estado</th>
+                                <th>Destacado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="product : ${products}">
+                                <td th:text="${product.id}">1</td>
+                                <td>
+                                    <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" 
+                                         class="rounded" style="width: 50px; height: 50px; object-fit: cover;"
+                                         alt="Producto">
+                                    <div th:unless="${product.imageUrl}" 
+                                         class="bg-secondary rounded d-flex align-items-center justify-content-center"
+                                         style="width: 50px; height: 50px;">
+                                        <i class="bi bi-image text-white"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        <strong th:text="${product.name}">Nombre del Producto</strong>
+                                        <br>
+                                        <small class="text-muted" th:text="${product.barcode}">Código de barras</small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info" th:text="${product.category.name}">Categoría</span>
+                                </td>
+                                <td>
+                                    <strong class="text-success" th:text="${'S/ ' + product.price}">S/ 0.00</strong>
+                                </td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${product.stock <= product.lowStockThreshold ? 'low-stock-badge' : 'bg-success'}"
+                                          th:text="${product.stock}">
+                                        0
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge status-badge" 
+                                          th:classappend="${product.status == 'ACTIVE' ? 'bg-success' : 'bg-warning'}"
+                                          th:text="${product.status}">
+                                        ACTIVE
+                                    </span>
+                                </td>
+                                <td>
+                                    <span th:if="${product.isFeatured}" class="badge featured-badge">
+                                        <i class="bi bi-star-fill"></i>
+                                        Destacado
+                                    </span>
+                                    <span th:unless="${product.isFeatured}" class="text-muted">
+                                        <i class="bi bi-star"></i>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a th:href="@{/admin/products/{id}(id=${product.id})}" 
+                                           class="btn btn-sm btn-outline-primary"
+                                           data-bs-toggle="tooltip" 
+                                           title="Ver detalles">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/admin/products/{id}/edit(id=${product.id})}" 
+                                           class="btn btn-sm btn-outline-warning"
+                                           data-bs-toggle="tooltip" 
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-info"
+                                                th:onclick="'toggleFeatured(' + ${product.id} + ')'"
+                                                data-bs-toggle="tooltip" 
+                                                title="Toggle destacado">
+                                            <i class="bi bi-star"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger"
+                                                th:onclick="'confirmDelete(' + ${product.id} + ', \'' + ${product.name} + '\')'"
+                                                data-bs-toggle="tooltip" 
+                                                title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav th:if="${totalPages > 1}" aria-label="Navegación de páginas">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/products(page=${currentPage - 1}, search=${search}, categoryId=${categoryId}, sortBy=${sortBy}, size=${size})}">
+                                <i class="bi bi-chevron-left"></i>
+                                Anterior
+                            </a>
+                        </li>
+                        
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${pageNum == currentPage ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/products(page=${pageNum}, search=${search}, categoryId=${categoryId}, sortBy=${sortBy}, size=${size})}"
+                               th:text="${pageNum + 1}">1</a>
+                        </li>
+                        
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/products(page=${currentPage + 1}, search=${search}, categoryId=${categoryId}, sortBy=${sortBy}, size=${size})}">
+                                Siguiente
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function toggleFeatured(productId) {
+            fetch(`/admin/products/${productId}/toggle-featured`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error al actualizar el estado destacado');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al actualizar el estado destacado');
+            });
+        }
+
+        function confirmDelete(productId, productName) {
+            if (confirm(`¿Está seguro de que desea eliminar el producto "${productName}"?`)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/products/${productId}/delete`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html> 

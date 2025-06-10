@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:fragment="html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} ? ${title} + ' - ' + 'UTP Web Development' : 'UTP Web Development'">UTP Web Development</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #0d6efd;
+            --secondary-color: #6c757d;
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #0dcaf0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            margin: 0.25rem 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+            transform: translateX(5px);
+        }
+        
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+            width: 20px;
+        }
+        
+        .main-content {
+            padding: 2rem;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 0.75rem;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 0.75rem 0.75rem 0 0 !important;
+            font-weight: 600;
+        }
+        
+        .btn {
+            border-radius: 0.5rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0.25rem 0.5rem rgba(0,0,0,0.15);
+        }
+        
+        .table {
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .table thead th {
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .form-control, .form-select {
+            border-radius: 0.5rem;
+            border: 1px solid #ced4da;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+        
+        .alert {
+            border-radius: 0.5rem;
+            border: none;
+        }
+        
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+        }
+        
+        .pagination {
+            margin-bottom: 0;
+        }
+        
+        .page-link {
+            border-radius: 0.375rem;
+            margin: 0 0.125rem;
+            border: 1px solid #dee2e6;
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-card .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stats-card .stats-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box .form-control {
+            padding-left: 2.5rem;
+        }
+        
+        .search-box .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        
+        .action-buttons .btn {
+            margin-right: 0.25rem;
+        }
+        
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+        }
+        
+        .featured-badge {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            color: #000;
+        }
+        
+        .low-stock-badge {
+            background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            color: white;
+        }
+    </style>
+    
+    <!-- Fragment for additional CSS -->
+    <th:block th:fragment="css"></th:block>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav th:replace="~{layout/base :: navbar}"></nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav th:replace="~{layout/base :: sidebar}"></nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <!-- Flash Messages -->
+                <div th:replace="~{layout/base :: flash-messages}"></div>
+
+                <!-- Page Content -->
+                <div th:replace="~{::content}"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+
+        // Confirm delete actions
+        function confirmDelete(message) {
+            return confirm(message || '¿Está seguro de que desea eliminar este elemento?');
+        }
+
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    </script>
+    
+    <!-- Fragment for additional scripts -->
+    <th:block th:fragment="scripts"></th:block>
+</body>
+</html>
+
+<!-- Fragment definitions -->
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <i class="bi bi-shop"></i>
+            UTP Web Development
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/dashboard">
+                        <i class="bi bi-speedometer2"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i>
+                        Admin
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/admin/users">Usuarios</a></li>
+                        <li><a class="dropdown-item" href="/admin/products">Productos</a></li>
+                        <li><a class="dropdown-item" href="/admin/categories">Categorías</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="/logout">Cerrar Sesión</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<nav th:fragment="sidebar" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+    <div class="position-sticky pt-3">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/dashboard">
+                    <i class="bi bi-speedometer2"></i>
+                    Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/users">
+                    <i class="bi bi-people"></i>
+                    Usuarios
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/products">
+                    <i class="bi bi-box"></i>
+                    Productos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/categories">
+                    <i class="bi bi-tags"></i>
+                    Categorías
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/orders">
+                    <i class="bi bi-cart"></i>
+                    Pedidos
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/reports">
+                    <i class="bi bi-graph-up"></i>
+                    Reportes
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div th:fragment="flash-messages">
+    <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+</div> 

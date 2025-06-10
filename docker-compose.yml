@@ -5,18 +5,18 @@ services:
     image: postgres:16-alpine
     container_name: utp_web_dev_db
     environment:
-      POSTGRES_DB: utp_web_dev
-      POSTGRES_USER: utp_user
-      POSTGRES_PASSWORD: utp_password
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./src/main/resources/db/init:/docker-entrypoint-initdb.d
     command: ["postgres", "-c", "listen_addresses=*"]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U utp_user -d utp_web_dev"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5

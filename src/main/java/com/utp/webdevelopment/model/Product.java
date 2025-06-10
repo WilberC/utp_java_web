@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +46,35 @@ public class Product {
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Size(max = 50)
+    @Column(unique = true)
+    private String barcode;
+
+    @Size(max = 255)
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Size(max = 20)
+    @Column(nullable = false)
+    private String status = "ACTIVE";
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt = LocalDateTime.now();
+
+    @Column(name = "low_stock_threshold", nullable = false)
+    private Integer lowStockThreshold = 10;
+
+    @Column(name = "is_featured", nullable = false)
+    private Boolean isFeatured = false;
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 } 

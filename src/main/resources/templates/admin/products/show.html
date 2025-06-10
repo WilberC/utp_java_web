@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Detalles del Producto - UTP Web Development</title>
+</head>
+<body>
+    <!-- Product Details Fragment -->
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-eye"></i>
+                Detalles del Producto
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a th:href="@{/admin/products/{id}/edit(id=${product.id})}" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i>
+                        Editar
+                    </a>
+                    <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" 
+                          method="post" 
+                          style="display: inline;"
+                          onsubmit="return confirmDelete('¿Está seguro de que desea eliminar el producto ' + '[[${product.name}]]' + '?')">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i>
+                            Eliminar
+                        </button>
+                    </form>
+                </div>
+                <a href="/admin/products" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a Productos
+                </a>
+            </div>
+        </div>
+
+        <!-- Product Details -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box"></i>
+                            Información del Producto
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4">
+                                <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" 
+                                     class="img-fluid rounded" style="max-width: 200px; max-height: 200px; object-fit: cover;"
+                                     alt="Producto">
+                                <div th:unless="${product.imageUrl}" 
+                                     class="bg-secondary rounded d-flex align-items-center justify-content-center mx-auto"
+                                     style="width: 200px; height: 200px;">
+                                    <i class="bi bi-image text-white" style="font-size: 3rem;"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-8">
+                                <h3 th:text="${product.name}">Nombre del Producto</h3>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Precio:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="h4 text-success" th:text="${'S/ ' + product.price}">S/ 0.00</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Stock:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge" 
+                                              th:classappend="${product.stock <= product.lowStockThreshold ? 'bg-danger' : 'bg-success'}"
+                                              th:text="${product.stock}">
+                                            0
+                                        </span>
+                                        <small class="text-muted ms-2" th:if="${product.stock <= product.lowStockThreshold}">
+                                            (Stock bajo)
+                                        </small>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Categoría:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge bg-info" th:text="${product.category.name}">Categoría</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Estado:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge" 
+                                              th:classappend="${product.status == 'ACTIVE' ? 'bg-success' : 'bg-warning'}"
+                                              th:text="${product.status}">
+                                            ACTIVE
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Destacado:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span th:if="${product.isFeatured}" class="badge bg-warning">
+                                            <i class="bi bi-star-fill"></i>
+                                            Sí
+                                        </span>
+                                        <span th:unless="${product.isFeatured}" class="text-muted">
+                                            <i class="bi bi-star"></i>
+                                            No
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3" th:if="${product.barcode}">
+                                    <div class="col-sm-4">
+                                        <strong>Código de Barras:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <code th:text="${product.barcode}">123456789</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4" th:if="${product.description}">
+                            <h6>Descripción:</h6>
+                            <p class="text-muted" th:text="${product.description}">Descripción del producto</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Metadata -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            Metadatos
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>ID:</strong> <span th:text="${product.id}">1</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Creado:</strong> <span th:text="${#temporals.format(product.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2024</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Última actualización:</strong> <span th:text="${#temporals.format(product.updatedAt, 'dd/MM/yyyy HH:mm')}">01/01/2024</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Umbral de stock bajo:</strong> <span th:text="${product.lowStockThreshold}">10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-lightning"></i>
+                            Acciones Rápidas
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-info"
+                                    th:onclick="'toggleFeatured(' + ${product.id} + ')'"
+                                    th:text="${product.isFeatured ? 'Quitar de Destacados' : 'Marcar como Destacado'}">
+                                Toggle Destacado
+                            </button>
+                            <a th:href="@{/admin/products/{id}/edit(id=${product.id})}" class="btn btn-outline-warning">
+                                <i class="bi bi-pencil"></i>
+                                Editar Producto
+                            </a>
+                            <a href="/admin/products" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Volver a Lista
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        function toggleFeatured(productId) {
+            fetch(`/admin/products/${productId}/toggle-featured`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error al actualizar el estado destacado');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al actualizar el estado destacado');
+            });
+        }
+    </script>
+</body>
+</html> 

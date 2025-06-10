@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Estadísticas de Productos - UTP Web Development</title>
+</head>
+<body>
+    <!-- Product Statistics Fragment -->
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-graph-up"></i>
+                Estadísticas de Productos
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <a href="/admin/products" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a Productos
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalProducts}">0</div>
+                    <div class="stats-label">Total de Productos</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${featuredProducts}">0</div>
+                    <div class="stats-label">Productos Destacados</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${lowStockProducts}">0</div>
+                    <div class="stats-label">Con Stock Bajo</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${outOfStockProducts}">0</div>
+                    <div class="stats-label">Sin Stock</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Analytics -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pie-chart"></i>
+                            Distribución por Estado
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-success rounded-circle me-3" style="width: 20px; height: 20px;"></div>
+                                    <div>
+                                        <strong>Activos</strong>
+                                        <div class="text-muted" th:text="${totalProducts - outOfStockProducts}">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-warning rounded-circle me-3" style="width: 20px; height: 20px;"></div>
+                                    <div>
+                                        <strong>Inactivos/Descontinuados</strong>
+                                        <div class="text-muted" th:text="${outOfStockProducts}">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="progress mb-3" style="height: 20px;">
+                            <div class="progress-bar bg-success" 
+                                 th:style="'width: ' + ${totalProducts > 0 ? ((totalProducts - outOfStockProducts) * 100 / totalProducts) : 0} + '%'"
+                                 th:text="${totalProducts > 0 ? ((totalProducts - outOfStockProducts) * 100 / totalProducts) : 0} + '%'">
+                                0%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-star"></i>
+                            Productos Destacados
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center">
+                            <div class="display-4 text-warning" th:text="${featuredProducts}">0</div>
+                            <p class="text-muted">de <span th:text="${totalProducts}">0</span> productos</p>
+                            
+                            <div class="progress mb-3" style="height: 20px;">
+                                <div class="progress-bar bg-warning" 
+                                     th:style="'width: ' + ${totalProducts > 0 ? (featuredProducts * 100 / totalProducts) : 0} + '%'"
+                                     th:text="${totalProducts > 0 ? (featuredProducts * 100 / totalProducts) : 0} + '%'">
+                                    0%
+                                </div>
+                            </div>
+                            
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle"></i>
+                                Los productos destacados aparecen en la página principal
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Management -->
+        <div class="row mt-4">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Gestión de Stock
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-danger rounded-circle me-3" style="width: 20px; height: 20px;"></div>
+                                    <div>
+                                        <strong>Sin Stock</strong>
+                                        <div class="text-muted" th:text="${outOfStockProducts}">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="bg-warning rounded-circle me-3" style="width: 20px; height: 20px;"></div>
+                                    <div>
+                                        <strong>Stock Bajo</strong>
+                                        <div class="text-muted" th:text="${lowStockProducts}">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning" th:if="${lowStockProducts > 0 || outOfStockProducts > 0}">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            <strong>Atención:</strong> 
+                            <span th:text="${lowStockProducts + outOfStockProducts}">0</span> productos requieren atención de stock
+                        </div>
+                        
+                        <div class="alert alert-success" th:if="${lowStockProducts == 0 && outOfStockProducts == 0}">
+                            <i class="bi bi-check-circle"></i>
+                            <strong>¡Excelente!</strong> Todos los productos tienen stock suficiente
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning"></i>
+                            Acciones Rápidas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="/admin/products/low-stock" class="btn btn-outline-warning">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                Ver Productos con Stock Bajo
+                            </a>
+                            <a href="/admin/products/featured" class="btn btn-outline-info">
+                                <i class="bi bi-star"></i>
+                                Gestionar Productos Destacados
+                            </a>
+                            <a href="/admin/products/create" class="btn btn-outline-success">
+                                <i class="bi bi-plus-circle"></i>
+                                Crear Nuevo Producto
+                            </a>
+                            <a href="/admin/products" class="btn btn-outline-primary">
+                                <i class="bi bi-list"></i>
+                                Ver Todos los Productos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
