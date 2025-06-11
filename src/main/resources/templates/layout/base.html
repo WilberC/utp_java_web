@@ -12,17 +12,22 @@
     <!-- Custom CSS -->
     <style>
         :root {
-            --primary-color: #0d6efd;
-            --secondary-color: #6c757d;
-            --success-color: #198754;
-            --danger-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #0dcaf0;
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #3498db;
+            --light-gray: #ecf0f1;
+            --dark-gray: #2c3e50;
+            --border-color: #bdc3c7;
+            --text-muted: #7f8c8d;
         }
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f8f9fa;
+            color: #2c3e50;
         }
         
         .navbar-brand {
@@ -32,7 +37,7 @@
         
         .sidebar {
             min-height: calc(100vh - 56px);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
         }
         
@@ -65,6 +70,7 @@
             border-radius: 0.75rem;
             box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
             transition: box-shadow 0.3s ease;
+            border: 1px solid var(--border-color);
         }
         
         .card:hover {
@@ -72,7 +78,7 @@
         }
         
         .card-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
             border-radius: 0.75rem 0.75rem 0 0 !important;
             font-weight: 600;
@@ -96,21 +102,21 @@
         }
         
         .table thead th {
-            background-color: #f8f9fa;
-            border-bottom: 2px solid #dee2e6;
+            background-color: #ecf0f1;
+            border-bottom: 2px solid var(--border-color);
             font-weight: 600;
-            color: #495057;
+            color: var(--dark-gray);
         }
         
         .form-control, .form-select {
             border-radius: 0.5rem;
-            border: 1px solid #ced4da;
+            border: 1px solid var(--border-color);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
         
         .form-control:focus, .form-select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+            box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
         }
         
         .alert {
@@ -130,11 +136,11 @@
         .page-link {
             border-radius: 0.375rem;
             margin: 0 0.125rem;
-            border: 1px solid #dee2e6;
+            border: 1px solid var(--border-color);
         }
         
         .stats-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
             color: white;
             border-radius: 1rem;
             padding: 1.5rem;
@@ -166,7 +172,7 @@
             left: 0.75rem;
             top: 50%;
             transform: translateY(-50%);
-            color: #6c757d;
+            color: var(--text-muted);
         }
         
         .action-buttons .btn {
@@ -179,12 +185,12 @@
         }
         
         .featured-badge {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            color: #000;
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
         }
         
         .low-stock-badge {
-            background: linear-gradient(135deg, #dc3545 0%, #e74c3c 100%);
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
             color: white;
         }
     </style>
@@ -244,11 +250,11 @@
 </html>
 
 <!-- Fragment definitions -->
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">
             <i class="bi bi-shop"></i>
-            UTP Web Development
+            MiniMarket Express
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
