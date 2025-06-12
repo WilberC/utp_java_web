@@ -34,6 +34,9 @@ public class ProductController {
                              @RequestParam(required = false) String search,
                              @RequestParam(required = false) Long categoryId) {
         
+        log.info("List products called with page={}, size={}, sortBy={}, sortDir={}, search={}, categoryId={}", 
+                page, size, sortBy, sortDir, search, categoryId);
+        
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
         
@@ -42,16 +45,24 @@ public class ProductController {
             // For now, we'll show all products. In a real app, you'd implement search
             productsPage = productService.findAllProductsPaginated(pageable);
         } else if (categoryId != null) {
-            // Filter by category
+            // Filter by category - we need to implement this in the service
             productsPage = productService.findAllProductsPaginated(pageable);
+            // TODO: Implement category filtering in ProductService
         } else {
             productsPage = productService.findAllProductsPaginated(pageable);
         }
         
+        log.info("Found {} products, total pages: {}, total elements: {}", 
+                productsPage.getContent().size(), productsPage.getTotalPages(), productsPage.getTotalElements());
+        
+        log.info("=== END PRODUCT DETAILS ===");
+        
         model.addAttribute("products", productsPage.getContent());
+        
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", productsPage.getTotalPages());
         model.addAttribute("totalItems", productsPage.getTotalElements());
+        model.addAttribute("size", size);
         model.addAttribute("sortBy", sortBy);
         model.addAttribute("sortDir", sortDir);
         model.addAttribute("search", search);
