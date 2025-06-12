@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Estadísticas de Usuarios - UTP Web Development</title>
+</head>
+<body>
+    <!-- User Stats Content Fragment -->
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-graph-up"></i>
+                Estadísticas de Usuarios
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <a href="/admin/users" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a Usuarios
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalUsers}">0</div>
+                    <div class="stats-label">Total de Usuarios</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${adminUsers}">0</div>
+                    <div class="stats-label">Administradores</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${customerUsers}">0</div>
+                    <div class="stats-label">Clientes</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${activeUsers}">0</div>
+                    <div class="stats-label">Usuarios Activos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Stats -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${suspendedUsers}">0</div>
+                    <div class="stats-label">Usuarios Suspendidos</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalUsers - activeUsers - suspendedUsers}">0</div>
+                    <div class="stats-label">Usuarios Inactivos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts and Analytics -->
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pie-chart"></i>
+                            Distribución por Rol
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <div class="h3 text-primary" th:text="${adminUsers}">0</div>
+                                    <div class="text-muted">Administradores</div>
+                                    <div class="progress mt-2" style="height: 8px;">
+                                        <div class="progress-bar bg-danger" 
+                                             th:style="'width: ' + ${totalUsers > 0 ? (adminUsers * 100 / totalUsers) : 0} + '%'"
+                                             role="progressbar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <div class="h3 text-success" th:text="${customerUsers}">0</div>
+                                    <div class="text-muted">Clientes</div>
+                                    <div class="progress mt-2" style="height: 8px;">
+                                        <div class="progress-bar bg-success" 
+                                             th:style="'width: ' + ${totalUsers > 0 ? (customerUsers * 100 / totalUsers) : 0} + '%'"
+                                             role="progressbar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bar-chart"></i>
+                            Estado de Usuarios
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="text-center">
+                                    <div class="h3 text-success" th:text="${activeUsers}">0</div>
+                                    <div class="text-muted">Activos</div>
+                                    <div class="progress mt-2" style="height: 8px;">
+                                        <div class="progress-bar bg-success" 
+                                             th:style="'width: ' + ${totalUsers > 0 ? (activeUsers * 100 / totalUsers) : 0} + '%'"
+                                             role="progressbar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center">
+                                    <div class="h3 text-warning" th:text="${totalUsers - activeUsers - suspendedUsers}">0</div>
+                                    <div class="text-muted">Inactivos</div>
+                                    <div class="progress mt-2" style="height: 8px;">
+                                        <div class="progress-bar bg-warning" 
+                                             th:style="'width: ' + ${totalUsers > 0 ? ((totalUsers - activeUsers - suspendedUsers) * 100 / totalUsers) : 0} + '%'"
+                                             role="progressbar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="text-center">
+                                    <div class="h3 text-danger" th:text="${suspendedUsers}">0</div>
+                                    <div class="text-muted">Suspendidos</div>
+                                    <div class="progress mt-2" style="height: 8px;">
+                                        <div class="progress-bar bg-danger" 
+                                             th:style="'width: ' + ${totalUsers > 0 ? (suspendedUsers * 100 / totalUsers) : 0} + '%'"
+                                             role="progressbar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Table -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-table"></i>
+                            Resumen de Estadísticas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Métrica</th>
+                                        <th>Valor</th>
+                                        <th>Porcentaje</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Total de Usuarios</strong></td>
+                                        <td th:text="${totalUsers}">0</td>
+                                        <td>100%</td>
+                                        <td><span class="badge bg-primary">Total</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Administradores</strong></td>
+                                        <td th:text="${adminUsers}">0</td>
+                                        <td th:text="${totalUsers > 0 ? (adminUsers * 100 / totalUsers) : 0} + '%'">0%</td>
+                                        <td><span class="badge bg-danger">Admin</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Clientes</strong></td>
+                                        <td th:text="${customerUsers}">0</td>
+                                        <td th:text="${totalUsers > 0 ? (customerUsers * 100 / totalUsers) : 0} + '%'">0%</td>
+                                        <td><span class="badge bg-success">Cliente</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Usuarios Activos</strong></td>
+                                        <td th:text="${activeUsers}">0</td>
+                                        <td th:text="${totalUsers > 0 ? (activeUsers * 100 / totalUsers) : 0} + '%'">0%</td>
+                                        <td><span class="badge bg-success">Activo</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Usuarios Inactivos</strong></td>
+                                        <td th:text="${totalUsers - activeUsers - suspendedUsers}">0</td>
+                                        <td th:text="${totalUsers > 0 ? ((totalUsers - activeUsers - suspendedUsers) * 100 / totalUsers) : 0} + '%'">0%</td>
+                                        <td><span class="badge bg-warning">Inactivo</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Usuarios Suspendidos</strong></td>
+                                        <td th:text="${suspendedUsers}">0</td>
+                                        <td th:text="${totalUsers > 0 ? (suspendedUsers * 100 / totalUsers) : 0} + '%'">0%</td>
+                                        <td><span class="badge bg-danger">Suspendido</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning"></i>
+                            Acciones Rápidas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <a href="/admin/users" class="btn btn-primary">
+                                <i class="bi bi-people"></i>
+                                Ver Todos los Usuarios
+                            </a>
+                            <a href="/admin/users/create" class="btn btn-success">
+                                <i class="bi bi-person-plus"></i>
+                                Crear Nuevo Usuario
+                            </a>
+                            <a href="/admin/dashboard" class="btn btn-secondary">
+                                <i class="bi bi-speedometer2"></i>
+                                Ir al Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

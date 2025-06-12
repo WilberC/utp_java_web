@@ -2,6 +2,7 @@ package com.utp.webdevelopment.controller;
 
 import com.utp.webdevelopment.model.Category;
 import com.utp.webdevelopment.service.CategoryService;
+import com.utp.webdevelopment.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CategoryController {
 
     private final CategoryService categoryService;
+    private final ProductService productService;
 
     @GetMapping
     public String listCategories(Model model) {
         model.addAttribute("categories", categoryService.findAllCategories());
+        model.addAttribute("totalProducts", productService.countProducts());
+        model.addAttribute("activeCategories", categoryService.countCategories());
         model.addAttribute("title", "Categorías");
         return "admin/categories/list";
     }
@@ -29,6 +33,7 @@ public class CategoryController {
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("category", new Category());
+        model.addAttribute("existingCategories", categoryService.findAllCategories());
         model.addAttribute("title", "Crear Categoría");
         return "admin/categories/create";
     }
@@ -40,6 +45,7 @@ public class CategoryController {
                                RedirectAttributes redirectAttributes) {
         
         if (result.hasErrors()) {
+            model.addAttribute("existingCategories", categoryService.findAllCategories());
             model.addAttribute("title", "Crear Categoría");
             return "admin/categories/create";
         }
@@ -47,6 +53,7 @@ public class CategoryController {
         try {
             if (categoryService.existsByName(category.getName())) {
                 result.rejectValue("name", "error.category", "La categoría ya existe");
+                model.addAttribute("existingCategories", categoryService.findAllCategories());
                 model.addAttribute("title", "Crear Categoría");
                 return "admin/categories/create";
             }
@@ -58,6 +65,7 @@ public class CategoryController {
         } catch (Exception e) {
             log.error("Error creating category", e);
             model.addAttribute("error", "Error al crear la categoría: " + e.getMessage());
+            model.addAttribute("existingCategories", categoryService.findAllCategories());
             model.addAttribute("title", "Crear Categoría");
             return "admin/categories/create";
         }

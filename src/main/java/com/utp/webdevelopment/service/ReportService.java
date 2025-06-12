@@ -21,10 +21,12 @@ public class ReportService {
     public Map<String, Object> getSummaryStatistics() {
         Map<String, Object> stats = new HashMap<>();
         
-        stats.put("totalUsers", userService.countUsers());
-        stats.put("totalProducts", productService.countProducts());
-        stats.put("totalCategories", categoryService.countCategories());
         stats.put("totalOrders", orderService.countOrders());
+        stats.put("totalRevenue", 0.0); // Placeholder - would calculate from actual orders
+        stats.put("totalCustomers", userService.countUsersByRole(com.utp.webdevelopment.model.enums.UserRole.CUSTOMER));
+        stats.put("totalProducts", productService.countProducts());
+        stats.put("totalUsers", userService.countUsers());
+        stats.put("totalCategories", categoryService.countCategories());
         stats.put("featuredProducts", productService.countFeaturedProducts());
         stats.put("lowStockProducts", productService.findLowStockProducts().size());
         

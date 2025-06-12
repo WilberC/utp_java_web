@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Categorías - UTP Web Development</title>
+</head>
+<body>
+    <!-- Categories List Content Fragment -->
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-tags"></i>
+                Gestión de Categorías
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <a href="/admin/categories/create" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i>
+                    Nueva Categoría
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${#lists.size(categories)}">0</div>
+                    <div class="stats-label">Total de Categorías</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalProducts}">0</div>
+                    <div class="stats-label">Total de Productos</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${activeCategories}">0</div>
+                    <div class="stats-label">Categorías Activas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-table"></i>
+                    Lista de Categorías
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Productos</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="category : ${categories}">
+                                <td th:text="${category.id}">1</td>
+                                <td>
+                                    <div>
+                                        <strong th:text="${category.name}">Nombre de la Categoría</strong>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info" th:text="${#lists.size(category.products)}">0</span>
+                                    <small class="text-muted ms-2">productos</small>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a th:href="@{/admin/categories/{id}(id=${category.id})}" 
+                                           class="btn btn-sm btn-outline-primary"
+                                           data-bs-toggle="tooltip" 
+                                           title="Ver detalles">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/admin/categories/{id}/edit(id=${category.id})}" 
+                                           class="btn btn-sm btn-outline-warning"
+                                           data-bs-toggle="tooltip" 
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form th:action="@{/admin/categories/{id}/delete(id=${category.id})}" 
+                                              method="post" 
+                                              style="display: inline;"
+                                              th:if="${#lists.isEmpty(category.products)}"
+                                              onsubmit="return confirmDelete('¿Está seguro de que desea eliminar la categoría ' + '[[${category.name}]]' + '?')">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                    data-bs-toggle="tooltip" 
+                                                    title="Eliminar">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                        <button class="btn btn-sm btn-outline-secondary" 
+                                                disabled
+                                                th:unless="${#lists.isEmpty(category.products)}"
+                                                data-bs-toggle="tooltip" 
+                                                title="No se puede eliminar - tiene productos asociados">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(categories)}">
+                                <td colspan="4" class="text-center text-muted py-4">
+                                    <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                    <br>
+                                    <p class="mt-2">No hay categorías registradas</p>
+                                    <a href="/admin/categories/create" class="btn btn-primary btn-sm">
+                                        <i class="bi bi-plus-circle"></i>
+                                        Crear Primera Categoría
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(message) {
+            return confirm(message);
+        }
+    </script>
+</body>
+</html> 

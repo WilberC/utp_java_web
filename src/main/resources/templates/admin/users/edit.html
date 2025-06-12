@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
 <head>
-    <title>Crear Usuario - UTP Web Development</title>
+    <title>Editar Usuario - UTP Web Development</title>
 </head>
 <body>
-    <!-- Create User Content Fragment -->
+    <!-- Edit User Content Fragment -->
     <div th:fragment="content">
         <!-- Page Header -->
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
             <h1 class="h2">
-                <i class="bi bi-person-plus"></i>
-                Crear Nuevo Usuario
+                <i class="bi bi-person-pencil"></i>
+                Editar Usuario
             </h1>
             <div class="btn-toolbar mb-2 mb-md-0">
                 <a href="/admin/users" class="btn btn-secondary">
@@ -20,18 +20,18 @@
             </div>
         </div>
 
-        <!-- Create User Form -->
+        <!-- Edit User Form -->
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-header">
                         <h5 class="mb-0">
-                            <i class="bi bi-person-plus"></i>
+                            <i class="bi bi-person-pencil"></i>
                             Información del Usuario
                         </h5>
                     </div>
                     <div class="card-body">
-                        <form th:action="@{/admin/users/create}" th:object="${user}" method="post">
+                        <form th:action="@{/admin/users/{id}/edit(id=${user.id})}" th:object="${user}" method="post">
                             
                             <!-- Personal Information -->
                             <div class="row mb-4">
@@ -93,11 +93,11 @@
                                 </div>
                                 
                                 <div class="col-md-6 mb-3">
-                                    <label for="password" class="form-label">Contraseña *</label>
+                                    <label for="password" class="form-label">Contraseña</label>
                                     <div class="input-group">
                                         <input type="password" class="form-control" id="password" th:field="*{password}" 
                                                th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''"
-                                               placeholder="Mínimo 6 caracteres">
+                                               placeholder="Dejar vacío para mantener la actual">
                                         <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                             <i class="bi bi-eye"></i>
                                         </button>
@@ -108,7 +108,7 @@
                                     <div class="form-text">
                                         <small class="text-muted">
                                             <i class="bi bi-info-circle"></i>
-                                            La contraseña debe tener al menos 6 caracteres
+                                            Deje vacío para mantener la contraseña actual. Mínimo 6 caracteres si se cambia.
                                         </small>
                                     </div>
                                 </div>
@@ -180,7 +180,7 @@
                                         </a>
                                         <button type="submit" class="btn btn-primary">
                                             <i class="bi bi-check-circle"></i>
-                                            Crear Usuario
+                                            Actualizar Usuario
                                         </button>
                                     </div>
                                 </div>
@@ -206,9 +206,10 @@
                             <li><strong>Nombre:</strong> Ingrese el nombre completo del usuario</li>
                             <li><strong>Email:</strong> Debe ser un email válido y único en el sistema</li>
                             <li><strong>Teléfono:</strong> Formato recomendado: +51 999 123 456</li>
-                            <li><strong>Contraseña:</strong> Mínimo 6 caracteres, se encriptará automáticamente</li>
+                            <li><strong>Contraseña:</strong> Deje vacío para mantener la actual, o ingrese una nueva (mínimo 6 caracteres)</li>
                             <li><strong>Rol:</strong> Administrador tiene acceso completo, Cliente acceso limitado</li>
                             <li><strong>Estado:</strong> Activo (normal), Inactivo (temporal), Suspendido (bloqueado)</li>
+                            <li><strong>Verificación:</strong> Marque las casillas para indicar que el email/teléfono están verificados</li>
                         </ul>
                     </div>
                 </div>

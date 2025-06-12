@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Usuarios - UTP Web Development</title>
 </head>
 <body>
+    <!-- Users List Content Fragment -->
     <div th:fragment="content">
         <!-- Page Header -->
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -31,7 +30,7 @@
             </div>
             <div class="col-md-3">
                 <div class="stats-card">
-                    <div class="stats-number" th:text="${#lists.size(#arrays.asList(userRoles))}">2</div>
+                    <div class="stats-number" th:text="${#arrays.length(userRoles)}">2</div>
                     <div class="stats-label">Tipos de Usuario</div>
                 </div>
             </div>
@@ -51,6 +50,12 @@
 
         <!-- Search and Filters -->
         <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-search"></i>
+                    Búsqueda y Filtros
+                </h5>
+            </div>
             <div class="card-body">
                 <form th:action="@{/admin/users}" method="get" class="row g-3">
                     <div class="col-md-4">

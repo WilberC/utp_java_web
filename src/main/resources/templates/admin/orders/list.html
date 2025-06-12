@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Pedidos - UTP Web Development</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-cart"></i>
+                Gestión de Pedidos
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a href="/admin/orders/pending" class="btn btn-sm btn-outline-warning">
+                        <i class="bi bi-clock"></i>
+                        Pendientes
+                    </a>
+                    <a href="/admin/orders/processing" class="btn btn-sm btn-outline-info">
+                        <i class="bi bi-gear"></i>
+                        En Proceso
+                    </a>
+                    <a href="/admin/orders/delivered" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-check-circle"></i>
+                        Entregados
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalItems}">0</div>
+                    <div class="stats-label">Total de Pedidos</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${#arrays.length(T(com.utp.webdevelopment.model.enums.OrderStatus).values())}">5</div>
+                    <div class="stats-label">Estados</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${totalPages}">0</div>
+                    <div class="stats-label">Páginas</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${currentPage + 1}">1</div>
+                    <div class="stats-label">Página Actual</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form th:action="@{/admin/orders}" method="get" class="row g-3">
+                    <div class="col-md-4">
+                        <div class="search-box">
+                            <i class="bi bi-search search-icon"></i>
+                            <input type="text" class="form-control" name="search" 
+                                   th:value="${search}" placeholder="Buscar pedidos...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" name="status">
+                            <option value="">Todos los estados</option>
+                            <option value="PENDING" th:selected="${status == 'PENDING'}">Pendiente</option>
+                            <option value="PROCESSING" th:selected="${status == 'PROCESSING'}">En Proceso</option>
+                            <option value="SHIPPED" th:selected="${status == 'SHIPPED'}">Enviado</option>
+                            <option value="DELIVERED" th:selected="${status == 'DELIVERED'}">Entregado</option>
+                            <option value="CANCELLED" th:selected="${status == 'CANCELLED'}">Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="sortBy">
+                            <option value="orderDate" th:selected="${sortBy == 'orderDate'}">Fecha</option>
+                            <option value="totalAmount" th:selected="${sortBy == 'totalAmount'}">Monto</option>
+                            <option value="status" th:selected="${sortBy == 'status'}">Estado</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select class="form-select" name="size">
+                            <option value="5" th:selected="${size == 5}">5 por página</option>
+                            <option value="10" th:selected="${size == 10}">10 por página</option>
+                            <option value="25" th:selected="${size == 25}">25 por página</option>
+                            <option value="50" th:selected="${size == 50}">50 por página</option>
+                        </select>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-funnel"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Orders Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-table"></i>
+                    Lista de Pedidos
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Fecha</th>
+                                <th>Monto</th>
+                                <th>Estado</th>
+                                <th>Método de Pago</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="order : ${orders}">
+                                <td th:text="${order.id}">1</td>
+                                <td>
+                                    <strong th:text="${order.user.name}">Nombre del Cliente</strong>
+                                    <br>
+                                    <small class="text-muted" th:text="${order.user.email}">email@example.com</small>
+                                </td>
+                                <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy HH:mm')}">01/01/2024</td>
+                                <td>
+                                    <strong class="text-success" th:text="${'S/ ' + order.totalAmount}">S/ 0.00</strong>
+                                </td>
+                                <td>
+                                    <span class="badge status-badge" 
+                                          th:classappend="${order.status == 'PENDING' ? 'bg-warning' : 
+                                                          order.status == 'PROCESSING' ? 'bg-info' : 
+                                                          order.status == 'SHIPPED' ? 'bg-primary' : 
+                                                          order.status == 'DELIVERED' ? 'bg-success' : 'bg-danger'}"
+                                          th:text="${order.status}">
+                                        PENDING
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary" th:text="${order.paymentMethod}">CASH</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a th:href="@{/admin/orders/{id}(id=${order.id})}" 
+                                           class="btn btn-sm btn-outline-primary"
+                                           data-bs-toggle="tooltip" 
+                                           title="Ver detalles">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-warning"
+                                                th:onclick="'updateStatus(' + ${order.id} + ')'"
+                                                data-bs-toggle="tooltip" 
+                                                title="Actualizar estado">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(orders)}">
+                                <td colspan="7" class="text-center py-4">
+                                    <i class="bi bi-inbox display-4 text-muted"></i>
+                                    <p class="mt-2 text-muted">No se encontraron pedidos</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <nav th:if="${totalPages > 1}" aria-label="Navegación de páginas">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/orders(page=${currentPage - 1}, size=${size}, sortBy=${sortBy}, sortDir=${sortDir}, status=${status})}">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                        
+                        <li class="page-item" th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${pageNum == currentPage ? 'active' : ''}">
+                            <a class="page-link" th:href="@{/admin/orders(page=${pageNum}, size=${size}, sortBy=${sortBy}, sortDir=${sortDir}, status=${status})}"
+                               th:text="${pageNum + 1}">1</a>
+                        </li>
+                        
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                            <a class="page-link" th:href="@{/admin/orders(page=${currentPage + 1}, size=${size}, sortBy=${sortBy}, sortDir=${sortDir}, status=${status})}">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

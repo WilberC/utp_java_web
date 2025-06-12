@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Detalles de la Categoría - UTP Web Development</title>
+</head>
+<body>
+    <!-- Category Details Fragment -->
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-eye"></i>
+                Detalles de la Categoría
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a th:href="@{/admin/categories/{id}/edit(id=${category.id})}" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i>
+                        Editar
+                    </a>
+                    <form th:action="@{/admin/categories/{id}/delete(id=${category.id})}" 
+                          method="post" 
+                          style="display: inline;"
+                          th:if="${#lists.isEmpty(category.products)}"
+                          onsubmit="return confirmDelete('¿Está seguro de que desea eliminar la categoría ' + '[[${category.name}]]' + '?')">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i>
+                            Eliminar
+                        </button>
+                    </form>
+                    <button class="btn btn-secondary" 
+                            disabled
+                            th:unless="${#lists.isEmpty(category.products)}"
+                            title="No se puede eliminar - tiene productos asociados">
+                        <i class="bi bi-trash"></i>
+                        Eliminar
+                    </button>
+                </div>
+                <a href="/admin/categories" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a Categorías
+                </a>
+            </div>
+        </div>
+
+        <!-- Category Details -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-tags"></i>
+                            Información de la Categoría
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4">
+                                <div class="bg-primary rounded d-flex align-items-center justify-content-center mx-auto"
+                                     style="width: 150px; height: 150px;">
+                                    <i class="bi bi-tags text-white" style="font-size: 3rem;"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-8">
+                                <h3 th:text="${category.name}">Nombre de la Categoría</h3>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>ID:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="h6" th:text="${category.id}">1</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Productos:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge bg-info" th:text="${#lists.size(category.products)}">0</span>
+                                        <small class="text-muted ms-2">productos asociados</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Estado:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge bg-success">Activa</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products in this Category -->
+                <div class="card mt-4" th:if="${!#lists.isEmpty(category.products)}">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box"></i>
+                            Productos en esta Categoría
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre</th>
+                                        <th>Precio</th>
+                                        <th>Stock</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${category.products}">
+                                        <td th:text="${product.id}">1</td>
+                                        <td>
+                                            <strong th:text="${product.name}">Nombre del Producto</strong>
+                                            <br>
+                                            <small class="text-muted" th:text="${product.barcode}">Código de barras</small>
+                                        </td>
+                                        <td>
+                                            <strong class="text-success" th:text="${'S/ ' + product.price}">S/ 0.00</strong>
+                                        </td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${product.stock <= product.lowStockThreshold ? 'bg-danger' : 'bg-success'}"
+                                                  th:text="${product.stock}">
+                                                0
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${product.status == 'ACTIVE' ? 'bg-success' : 'bg-warning'}"
+                                                  th:text="${product.status}">
+                                                ACTIVE
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/admin/products/{id}(id=${product.id})}" 
+                                               class="btn btn-sm btn-outline-primary"
+                                               data-bs-toggle="tooltip" 
+                                               title="Ver detalles">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty Products Message -->
+                <div class="card mt-4" th:if="${#lists.isEmpty(category.products)}">
+                    <div class="card-body text-center text-muted py-4">
+                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                        <br>
+                        <p class="mt-2">No hay productos en esta categoría</p>
+                        <a href="/admin/products/create" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-circle"></i>
+                            Agregar Producto
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Metadata -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            Metadatos
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>ID:</strong> <span th:text="${category.id}">1</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Nombre:</strong> <span th:text="${category.name}">Categoría</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Total de productos:</strong> <span th:text="${#lists.size(category.products)}">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-lightning"></i>
+                            Acciones Rápidas
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/admin/categories/{id}/edit(id=${category.id})}" class="btn btn-outline-warning">
+                                <i class="bi bi-pencil"></i>
+                                Editar Categoría
+                            </a>
+                            <a href="/admin/products/create" class="btn btn-outline-primary">
+                                <i class="bi bi-plus-circle"></i>
+                                Agregar Producto
+                            </a>
+                            <a href="/admin/categories" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Volver a Lista
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warning Card -->
+                <div class="card mt-3" th:if="${!#lists.isEmpty(category.products)}">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Advertencia
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning" role="alert">
+                            <small>
+                                <i class="bi bi-info-circle"></i>
+                                <strong>Nota:</strong> Esta categoría no se puede eliminar porque tiene productos asociados.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(message) {
+            return confirm(message);
+        }
+    </script>
+</body>
+</html> 

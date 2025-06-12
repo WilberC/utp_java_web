@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Reportes - UTP Web Development</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-graph-up"></i>
+                Reportes y Estadísticas
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a href="/admin/reports/export/sales" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-download"></i>
+                        Exportar PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Stats Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${summaryStats.totalOrders}">0</div>
+                    <div class="stats-label">Total de Pedidos</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${'S/ ' + summaryStats.totalRevenue}">S/ 0.00</div>
+                    <div class="stats-label">Ingresos Totales</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${summaryStats.totalCustomers}">0</div>
+                    <div class="stats-label">Clientes</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${summaryStats.totalProducts}">0</div>
+                    <div class="stats-label">Productos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Report Categories -->
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-cart"></i>
+                            Reportes de Ventas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="/admin/reports/sales" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Reporte de Ventas</h6>
+                                    <small class="text-muted">Análisis detallado de ventas por período</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <a href="/admin/reports/sales?startDate=2024-01-01&endDate=2024-12-31" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Ventas Anuales</h6>
+                                    <small class="text-muted">Resumen de ventas del año actual</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <a href="/admin/reports/sales?startDate=2024-06-01&endDate=2024-06-30" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Ventas Mensuales</h6>
+                                    <small class="text-muted">Resumen de ventas del mes actual</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-box"></i>
+                            Reportes de Productos
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="/admin/reports/products" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Rendimiento de Productos</h6>
+                                    <small class="text-muted">Análisis de productos más vendidos</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <a href="/admin/products/low-stock" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Stock Bajo</h6>
+                                    <small class="text-muted">Productos que requieren reposición</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <a href="/admin/products/featured" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Productos Destacados</h6>
+                                    <small class="text-muted">Gestión de productos destacados</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-people"></i>
+                            Reportes de Clientes
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="/admin/reports/customers" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Análisis de Clientes</h6>
+                                    <small class="text-muted">Comportamiento y preferencias de clientes</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <a href="/admin/users" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Gestión de Usuarios</h6>
+                                    <small class="text-muted">Administración de usuarios del sistema</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-archive"></i>
+                            Reportes de Inventario
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <a href="/admin/reports/inventory" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Estado de Inventario</h6>
+                                    <small class="text-muted">Resumen completo del inventario</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <a href="/admin/products" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">Gestión de Productos</h6>
+                                    <small class="text-muted">Administración completa de productos</small>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning"></i>
+                            Acciones Rápidas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <a href="/admin/reports/sales" class="btn btn-outline-primary w-100">
+                                    <i class="bi bi-graph-up"></i>
+                                    <br>
+                                    Reporte de Ventas
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/admin/reports/products" class="btn btn-outline-success w-100">
+                                    <i class="bi bi-box"></i>
+                                    <br>
+                                    Reporte de Productos
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/admin/reports/customers" class="btn btn-outline-info w-100">
+                                    <i class="bi bi-people"></i>
+                                    <br>
+                                    Reporte de Clientes
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <a href="/admin/reports/inventory" class="btn btn-outline-warning w-100">
+                                    <i class="bi bi-archive"></i>
+                                    <br>
+                                    Reporte de Inventario
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

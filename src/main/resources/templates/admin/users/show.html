@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Detalles del Usuario - UTP Web Development</title>
+</head>
+<body>
+    <!-- User Details Fragment -->
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-person"></i>
+                Detalles del Usuario
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" class="btn btn-warning">
+                        <i class="bi bi-pencil"></i>
+                        Editar
+                    </a>
+                    <form th:action="@{/admin/users/{id}/delete(id=${user.id})}" 
+                          method="post" 
+                          style="display: inline;"
+                          onsubmit="return confirmDelete('¿Está seguro de que desea eliminar el usuario ' + '[[${user.name}]]' + '?')">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i>
+                            Eliminar
+                        </button>
+                    </form>
+                </div>
+                <a href="/admin/users" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver a Usuarios
+                </a>
+            </div>
+        </div>
+
+        <!-- User Details -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person"></i>
+                            Información del Usuario
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4">
+                                <div class="bg-primary rounded d-flex align-items-center justify-content-center mx-auto"
+                                     style="width: 150px; height: 150px;">
+                                    <i class="bi bi-person text-white" style="font-size: 3rem;"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-8">
+                                <h3 th:text="${user.name}">Nombre del Usuario</h3>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>ID:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="h6" th:text="${user.id}">1</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Email:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span th:text="${user.email}">email@example.com</span>
+                                        <span class="badge ms-2" 
+                                              th:classappend="${user.emailVerified ? 'bg-success' : 'bg-secondary'}"
+                                              title="Email verificado">
+                                            <i class="bi bi-envelope"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Teléfono:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span th:text="${user.phone}">+51 999 123 456</span>
+                                        <span class="badge ms-2" 
+                                              th:classappend="${user.phoneVerified ? 'bg-success' : 'bg-secondary'}"
+                                              title="Teléfono verificado">
+                                            <i class="bi bi-telephone"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Dirección:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span th:text="${user.address}">Dirección del usuario</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Rol:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge" 
+                                              th:classappend="${user.role == T(com.utp.webdevelopment.model.enums.UserRole).ADMIN ? 'bg-danger' : 'bg-success'}"
+                                              th:text="${user.role == T(com.utp.webdevelopment.model.enums.UserRole).ADMIN ? 'Administrador' : 'Cliente'}">
+                                            Cliente
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Estado:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span class="badge status-badge" 
+                                              th:classappend="${user.status == 'ACTIVE' ? 'bg-success' : user.status == 'INACTIVE' ? 'bg-warning' : 'bg-danger'}"
+                                              th:text="${user.status == 'ACTIVE' ? 'Activo' : user.status == 'INACTIVE' ? 'Inactivo' : 'Suspendido'}">
+                                            Activo
+                                        </span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-sm-4">
+                                        <strong>Fecha de Creación:</strong>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <span th:text="${#temporals.format(user.createdAt, 'dd/MM/yyyy HH:mm')}">01/01/2024 12:00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Metadata -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-info-circle"></i>
+                            Metadatos
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <strong>ID:</strong> <span th:text="${user.id}">1</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Nombre:</strong> <span th:text="${user.name}">Usuario</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Email:</strong> <span th:text="${user.email}">email@example.com</span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Rol:</strong> 
+                            <span class="badge" 
+                                  th:classappend="${user.role == T(com.utp.webdevelopment.model.enums.UserRole).ADMIN ? 'bg-danger' : 'bg-success'}"
+                                  th:text="${user.role}">
+                                CUSTOMER
+                            </span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Estado:</strong> 
+                            <span class="badge status-badge" 
+                                  th:classappend="${user.status == 'ACTIVE' ? 'bg-success' : user.status == 'INACTIVE' ? 'bg-warning' : 'bg-danger'}"
+                                  th:text="${user.status}">
+                                ACTIVE
+                            </span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Email Verificado:</strong> 
+                            <span class="badge" 
+                                  th:classappend="${user.emailVerified ? 'bg-success' : 'bg-secondary'}"
+                                  th:text="${user.emailVerified ? 'Sí' : 'No'}">
+                                No
+                            </span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Teléfono Verificado:</strong> 
+                            <span class="badge" 
+                                  th:classappend="${user.phoneVerified ? 'bg-success' : 'bg-secondary'}"
+                                  th:text="${user.phoneVerified ? 'Sí' : 'No'}">
+                                No
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-lightning"></i>
+                            Acciones Rápidas
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/admin/users/{id}/edit(id=${user.id})}" class="btn btn-outline-warning">
+                                <i class="bi bi-pencil"></i>
+                                Editar Usuario
+                            </a>
+                            <form th:action="@{/admin/users/{id}/delete(id=${user.id})}" 
+                                  method="post" 
+                                  style="display: inline;"
+                                  onsubmit="return confirmDelete('¿Está seguro de que desea eliminar el usuario ' + '[[${user.name}]]' + '?')">
+                                <button type="submit" class="btn btn-outline-danger">
+                                    <i class="bi bi-trash"></i>
+                                    Eliminar Usuario
+                                </button>
+                            </form>
+                            <a href="/admin/users" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i>
+                                Volver a Lista
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Status -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-shield-check"></i>
+                            Estado de la Cuenta
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <i class="bi bi-envelope"></i>
+                            <span th:text="${user.emailVerified ? 'Email verificado' : 'Email no verificado'}">Email no verificado</span>
+                        </div>
+                        <div class="mb-2">
+                            <i class="bi bi-telephone"></i>
+                            <span th:text="${user.phoneVerified ? 'Teléfono verificado' : 'Teléfono no verificado'}">Teléfono no verificado</span>
+                        </div>
+                        <div class="mb-2">
+                            <i class="bi bi-person-check"></i>
+                            <span th:text="${user.status == 'ACTIVE' ? 'Cuenta activa' : user.status == 'INACTIVE' ? 'Cuenta inactiva' : 'Cuenta suspendida'}">Cuenta activa</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
