@@ -24,9 +24,9 @@ public class OrderController {
     @GetMapping
     public String listOrders(Model model, 
                            @RequestParam(defaultValue = "0") int page,
-                           @RequestParam(defaultValue = "10") int size,
-                           @RequestParam(defaultValue = "orderDate") String sortBy,
-                           @RequestParam(defaultValue = "desc") String sortDir,
+                           @RequestParam(defaultValue = "5") int size,
+                           @RequestParam(defaultValue = "id") String sortBy,
+                           @RequestParam(defaultValue = "asc") String sortDir,
                            @RequestParam(required = false) String status) {
         
         Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);

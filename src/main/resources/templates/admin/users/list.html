@@ -67,6 +67,7 @@
                     </div>
                     <div class="col-md-3">
                         <select class="form-select" name="sortBy">
+                            <option value="id" th:selected="${sortBy == 'id' || sortBy == null}">ID</option>
                             <option value="name" th:selected="${sortBy == 'name'}">Nombre</option>
                             <option value="email" th:selected="${sortBy == 'email'}">Email</option>
                             <option value="role" th:selected="${sortBy == 'role'}">Rol</option>

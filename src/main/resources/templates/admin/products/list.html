@@ -82,6 +82,7 @@
                     </div>
                     <div class="col-md-2">
                         <select class="form-select" name="sortBy">
+                            <option value="id" th:selected="${sortBy == 'id' || sortBy == null}">ID</option>
                             <option value="name" th:selected="${sortBy == 'name'}">Nombre</option>
                             <option value="price" th:selected="${sortBy == 'price'}">Precio</option>
                             <option value="stock" th:selected="${sortBy == 'stock'}">Stock</option>
