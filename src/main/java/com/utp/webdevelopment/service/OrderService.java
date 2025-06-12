@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,6 +53,12 @@ public class OrderService {
             log.warn("Invalid order status: {}", status);
             return Page.empty(pageable);
         }
+    }
+
+    public List<Order> findOrdersByDateRange(LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+        return orderRepository.findByOrderDateBetween(startDateTime, endDateTime);
     }
 
     public Order createOrder(Order order) {

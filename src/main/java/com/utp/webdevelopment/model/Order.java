@@ -80,4 +80,9 @@ public class Order {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<OrderItem> orderItems = new ArrayList<>();
+
+    // Helper methods
+    public LocalDateTime getCreatedAt() {
+        return this.createdAt;
+    }
 } 

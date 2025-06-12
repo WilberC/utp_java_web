@@ -48,6 +48,10 @@ public class ProductService {
         return productRepository.findLowStockProducts();
     }
 
+    public List<Product> findOutOfStockProducts() {
+        return productRepository.findByStock(0);
+    }
+
     public Product createProduct(Product product) {
         // Set default values if not provided
         if (product.getStatus() == null) {

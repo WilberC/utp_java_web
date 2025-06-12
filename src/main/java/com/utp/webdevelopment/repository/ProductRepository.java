@@ -17,6 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByIsFeaturedTrue();
     List<Product> findByStatus(String status);
     Page<Product> findByStatus(String status, Pageable pageable);
+    List<Product> findByStock(Integer stock);
     boolean existsByBarcode(String barcode);
     long countByCategoryId(Long categoryId);
     long countByIsFeaturedTrue();

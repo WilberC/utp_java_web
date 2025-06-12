@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Reporte de Ventas - UTP Web Development</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-graph-up"></i>
+                Reporte de Ventas
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a th:href="@{/admin/reports/export/sales(startDate=${startDate}, endDate=${endDate})}" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-download"></i>
+                        Exportar PDF
+                    </a>
+                    <a href="/admin/reports" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Filter -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-calendar"></i>
+                            Filtros de Fecha
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="get" action="/admin/reports/sales" class="row g-3">
+                            <div class="col-md-4">
+                                <label for="startDate" class="form-label">Fecha de Inicio</label>
+                                <input type="date" class="form-control" id="startDate" name="startDate" 
+                                       th:value="${startDate}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="endDate" class="form-label">Fecha de Fin</label>
+                                <input type="date" class="form-control" id="endDate" name="endDate" 
+                                       th:value="${endDate}" required>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary me-2">
+                                    <i class="bi bi-search"></i>
+                                    Filtrar
+                                </button>
+                                <a href="/admin/reports/sales" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-clockwise"></i>
+                                    Resetear
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${'S/ ' + salesData.totalSales}">S/ 0.00</div>
+                    <div class="stats-label">Ventas Totales</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${salesData.totalOrders}">0</div>
+                    <div class="stats-label">Total de Pedidos</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${'S/ ' + salesData.averageOrderValue}">S/ 0.00</div>
+                    <div class="stats-label">Valor Promedio</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${#dates.format(startDate, 'dd/MM/yyyy')} + ' - ' + #dates.format(endDate, 'dd/MM/yyyy')}">Período</div>
+                    <div class="stats-label">Rango de Fechas</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales Chart -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bar-chart"></i>
+                            Ventas por Día
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height: 400px;">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Products -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-star"></i>
+                            Productos Más Vendidos
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Cantidad</th>
+                                        <th>Ingresos</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${salesData.topProducts}">
+                                        <td th:text="${product.name}">Producto</td>
+                                        <td th:text="${product.quantity}">0</td>
+                                        <td th:text="${'S/ ' + product.revenue}">S/ 0.00</td>
+                                    </tr>
+                                    <tr th:if="${#maps.isEmpty(salesData.topProducts)}">
+                                        <td colspan="3" class="text-center text-muted">
+                                            No hay datos disponibles
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-calendar-week"></i>
+                            Ventas por Día
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Pedidos</th>
+                                        <th>Ventas</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="day : ${salesData.salesByDay}">
+                                        <td th:text="${#dates.format(day.date, 'dd/MM/yyyy')}">01/01/2024</td>
+                                        <td th:text="${day.orders}">0</td>
+                                        <td th:text="${'S/ ' + day.sales}">S/ 0.00</td>
+                                    </tr>
+                                    <tr th:if="${#maps.isEmpty(salesData.salesByDay)}">
+                                        <td colspan="3" class="text-center text-muted">
+                                            No hay datos disponibles
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Sales Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-list-ul"></i>
+                            Detalle de Ventas
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID Pedido</th>
+                                        <th>Cliente</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                        <th>Productos</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${salesData.orders}">
+                                        <td th:text="${order.id}">#12345</td>
+                                        <td th:text="${order.customerName}">Cliente</td>
+                                        <td th:text="${#dates.format(order.date, 'dd/MM/yyyy HH:mm')}">01/01/2024 10:00</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${order.status == 'DELIVERED' ? 'bg-success' : 
+                                                                              order.status == 'SHIPPED' ? 'bg-info' : 
+                                                                              order.status == 'PROCESSING' ? 'bg-warning' : 
+                                                                              order.status == 'CANCELLED' ? 'bg-danger' : 'bg-secondary'}"
+                                                  th:text="${order.status}">PENDING</span>
+                                        </td>
+                                        <td th:text="${order.itemCount}">0</td>
+                                        <td th:text="${'S/ ' + order.total}">S/ 0.00</td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(salesData.orders)}">
+                                        <td colspan="6" class="text-center text-muted">
+                                            No hay pedidos en el período seleccionado
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js for sales visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        // Sales chart data
+        const salesData = /*[[${salesData.salesByDay}]]*/ {};
+        
+        if (Object.keys(salesData).length > 0) {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(salesData).map(key => salesData[key].date),
+                    datasets: [{
+                        label: 'Ventas (S/)',
+                        data: Object.keys(salesData).map(key => salesData[key].sales),
+                        borderColor: '#1e3a8a',
+                        backgroundColor: 'rgba(30, 58, 138, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'S/ ' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html> 

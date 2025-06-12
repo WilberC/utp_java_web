@@ -81,4 +81,17 @@ public class Product {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    // Helper methods
+    public boolean isActive() {
+        return "ACTIVE".equals(this.status);
+    }
+
+    public boolean isFeatured() {
+        return this.isFeatured != null && this.isFeatured;
+    }
+
+    public String getSku() {
+        return this.barcode != null ? this.barcode : "SKU" + String.format("%06d", this.id);
+    }
 } 

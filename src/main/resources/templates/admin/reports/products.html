@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>Reporte de Productos - UTP Web Development</title>
+</head>
+<body>
+    <div th:fragment="content">
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2">
+                <i class="bi bi-box"></i>
+                Reporte de Productos
+            </h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group me-2">
+                    <a th:href="@{/admin/reports/export/products}" class="btn btn-sm btn-outline-success">
+                        <i class="bi bi-download"></i>
+                        Exportar PDF
+                    </a>
+                    <a href="/admin/reports" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${productData.totalProducts}">0</div>
+                    <div class="stats-label">Total de Productos</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${productData.featuredProducts}">0</div>
+                    <div class="stats-label">Productos Destacados</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${productData.lowStockProducts}">0</div>
+                    <div class="stats-label">Stock Bajo</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card">
+                    <div class="stats-number" th:text="${productData.outOfStockProducts}">0</div>
+                    <div class="stats-label">Sin Stock</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pie-chart"></i>
+                            Productos por Categoría
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-bar-chart"></i>
+                            Estado de Stock
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="stockChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Selling Products -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-star"></i>
+                            Productos Más Vendidos
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Categoría</th>
+                                        <th>Precio</th>
+                                        <th>Stock</th>
+                                        <th>Ventas</th>
+                                        <th>Ingresos</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${productData.topSellingProducts}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" 
+                                                     class="rounded me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <div>
+                                                    <strong th:text="${product.name}">Producto</strong>
+                                                    <br>
+                                                    <small class="text-muted" th:text="${product.sku}">SKU</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:text="${product.category}">Categoría</td>
+                                        <td th:text="${'S/ ' + product.price}">S/ 0.00</td>
+                                        <td>
+                                            <span th:class="${product.stock > 10 ? 'text-success' : product.stock > 0 ? 'text-warning' : 'text-danger'}"
+                                                  th:text="${product.stock}">0</span>
+                                        </td>
+                                        <td th:text="${product.salesCount}">0</td>
+                                        <td th:text="${'S/ ' + product.revenue}">S/ 0.00</td>
+                                        <td>
+                                            <span class="badge" th:classappend="${product.stock > 10 ? 'bg-success' : 
+                                                                              product.stock > 0 ? 'bg-warning' : 'bg-danger'}"
+                                                  th:text="${product.stock > 10 ? 'Disponible' : 
+                                                           product.stock > 0 ? 'Stock Bajo' : 'Sin Stock'}">
+                                                Estado
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#maps.isEmpty(productData.topSellingProducts)}">
+                                        <td colspan="7" class="text-center text-muted">
+                                            No hay datos disponibles
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Alerts -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Productos con Stock Bajo
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Stock Actual</th>
+                                        <th>Stock Mínimo</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${productData.lowStockProducts}">
+                                        <td th:text="${product.name}">Producto</td>
+                                        <td>
+                                            <span class="text-warning fw-bold" th:text="${product.stock}">0</span>
+                                        </td>
+                                        <td th:text="${product.minStock}">0</td>
+                                        <td>
+                                            <a th:href="@{/admin/products/{id}/edit(id=${product.id})}" 
+                                               class="btn btn-sm btn-outline-warning">
+                                                <i class="bi bi-pencil"></i>
+                                                Reponer
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(productData.lowStockProducts)}">
+                                        <td colspan="4" class="text-center text-muted">
+                                            No hay productos con stock bajo
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-x-circle"></i>
+                            Productos Sin Stock
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Producto</th>
+                                        <th>Última Venta</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="product : ${productData.outOfStockProducts}">
+                                        <td th:text="${product.name}">Producto</td>
+                                        <td th:text="${#dates.format(product.lastSale, 'dd/MM/yyyy')}">01/01/2024</td>
+                                        <td>
+                                            <a th:href="@{/admin/products/{id}/edit(id=${product.id})}" 
+                                               class="btn btn-sm btn-outline-danger">
+                                                <i class="bi bi-plus-circle"></i>
+                                                Reponer
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(productData.outOfStockProducts)}">
+                                        <td colspan="3" class="text-center text-muted">
+                                            No hay productos sin stock
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products by Category -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-tags"></i>
+                            Productos por Categoría
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Categoría</th>
+                                        <th>Total Productos</th>
+                                        <th>Productos Activos</th>
+                                        <th>Productos Destacados</th>
+                                        <th>Stock Bajo</th>
+                                        <th>Sin Stock</th>
+                                        <th>Valor Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="category : ${productData.productsByCategory}">
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-tag me-2"></i>
+                                                <span th:text="${category.name}">Categoría</span>
+                                            </div>
+                                        </td>
+                                        <td th:text="${category.totalProducts}">0</td>
+                                        <td th:text="${category.activeProducts}">0</td>
+                                        <td th:text="${category.featuredProducts}">0</td>
+                                        <td>
+                                            <span class="text-warning" th:text="${category.lowStockProducts}">0</span>
+                                        </td>
+                                        <td>
+                                            <span class="text-danger" th:text="${category.outOfStockProducts}">0</span>
+                                        </td>
+                                        <td th:text="${'S/ ' + category.totalValue}">S/ 0.00</td>
+                                    </tr>
+                                    <tr th:if="${#maps.isEmpty(productData.productsByCategory)}">
+                                        <td colspan="7" class="text-center text-muted">
+                                            No hay datos disponibles
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js for product visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script th:inline="javascript">
+        // Category chart data
+        const categoryData = /*[[${productData.productsByCategory}]]*/ {};
+        const stockData = /*[[${productData.stockAlerts}]]*/ {};
+        
+        // Category distribution chart
+        if (Object.keys(categoryData).length > 0) {
+            const ctx1 = document.getElementById('categoryChart').getContext('2d');
+            const categoryChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categoryData).map(key => categoryData[key].name),
+                    datasets: [{
+                        data: Object.keys(categoryData).map(key => categoryData[key].totalProducts),
+                        backgroundColor: [
+                            '#1e3a8a', '#3b82f6', '#06b6d4', '#10b981', '#f59e0b',
+                            '#ef4444', '#8b5cf6', '#ec4899', '#84cc16', '#f97316'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Stock status chart
+        const ctx2 = document.getElementById('stockChart').getContext('2d');
+        const stockChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Disponible', 'Stock Bajo', 'Sin Stock'],
+                datasets: [{
+                    label: 'Cantidad de Productos',
+                    data: [
+                        /*[[${productData.totalProducts - productData.lowStockProducts - productData.outOfStockProducts}]]*/ 0,
+                        /*[[${productData.lowStockProducts}]]*/ 0,
+                        /*[[${productData.outOfStockProducts}]]*/ 0
+                    ],
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
