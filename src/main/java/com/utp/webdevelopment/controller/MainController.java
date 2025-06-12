@@ -18,11 +18,6 @@ public class MainController {
     private final ProductService productService;
     private final CategoryService categoryService;
 
-    @GetMapping("/")
-    public String home() {
-        return "redirect:/admin/dashboard";
-    }
-
     @GetMapping("/admin/dashboard")
     public String dashboard(Model model) {
         // Get statistics

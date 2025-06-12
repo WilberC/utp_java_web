@@ -123,4 +123,16 @@ public class ProductService {
     public List<Product> searchProducts(String searchTerm) {
         return productRepository.searchProducts(searchTerm);
     }
+
+    public Page<Product> findProductsByCategoryIdPaginated(Long categoryId, Pageable pageable) {
+        return productRepository.findByCategoryId(categoryId, pageable);
+    }
+
+    public Page<Product> searchProductsPaginated(String searchTerm, Pageable pageable) {
+        return productRepository.searchProductsPaginated(searchTerm, pageable);
+    }
+
+    public Page<Product> findActiveProductsPaginated(Pageable pageable) {
+        return productRepository.findByStatus("ACTIVE", pageable);
+    }
 } 

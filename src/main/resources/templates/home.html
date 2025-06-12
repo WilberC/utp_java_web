@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title>UTP Web Development - Inicio</title>
+</head>
+<body>
+    <!-- Home Content Fragment -->
+    <div th:fragment="content">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="container-fluid">
+                <div class="row align-items-center min-vh-75">
+                    <div class="col-lg-6">
+                        <div class="hero-content">
+                            <h1 class="display-4 fw-bold mb-4">
+                                Bienvenido a <span class="text-primary">UTP Web Development</span>
+                            </h1>
+                            <p class="lead mb-4">
+                                Descubre nuestra amplia gama de productos de alta calidad. 
+                                Desde tecnología hasta productos para el hogar, tenemos todo lo que necesitas.
+                            </p>
+                            <div class="hero-buttons">
+                                <a href="/catalog" class="btn btn-primary btn-lg me-3">
+                                    <i class="bi bi-grid-3x3-gap"></i>
+                                    Ver Catálogo
+                                </a>
+                                <a href="/catalog/featured" class="btn btn-outline-primary btn-lg">
+                                    <i class="bi bi-star"></i>
+                                    Productos Destacados
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="hero-image">
+                            <div class="hero-placeholder d-flex align-items-center justify-content-center">
+                                <i class="bi bi-shop text-muted" style="font-size: 8rem;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Featured Products Section -->
+        <div class="container-fluid py-5" th:if="${!#lists.isEmpty(featuredProducts)}">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-header text-center mb-5">
+                        <h2 class="h1 mb-3">
+                            <i class="bi bi-star-fill text-warning"></i>
+                            Productos Destacados
+                        </h2>
+                        <p class="text-muted">Nuestros productos más populares y recomendados</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-3 col-md-4 col-sm-6 mb-4" th:each="product : ${featuredProducts}">
+                    <div class="card h-100 product-card featured-product-card">
+                        <div class="product-image-container">
+                            <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" 
+                                 class="card-img-top product-image" alt="Producto">
+                            <div th:unless="${product.imageUrl}" 
+                                 class="card-img-top product-image-placeholder d-flex align-items-center justify-content-center">
+                                <i class="bi bi-image text-muted"></i>
+                            </div>
+                            <div class="product-overlay">
+                                <a th:href="@{/catalog/product/{id}(id=${product.id})}" 
+                                   class="btn btn-primary btn-sm">
+                                    <i class="bi bi-eye"></i>
+                                    Ver Detalles
+                                </a>
+                            </div>
+                            <span class="badge featured-badge">
+                                <i class="bi bi-star-fill"></i>
+                                Destacado
+                            </span>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title" th:text="${product.name}">Nombre del Producto</h6>
+                            <p class="card-text text-muted small" th:text="${product.description}">Descripción</p>
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="badge bg-info" th:text="${product.category?.name}">Categoría</span>
+                                    <span class="badge" 
+                                          th:classappend="${product.stock <= product.lowStockThreshold ? 'bg-warning' : 'bg-success'}"
+                                          th:text="${product.stock > 0 ? product.stock : 'Agotado'}">
+                                        Stock
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="h5 text-success mb-0" th:text="${'S/ ' + product.price}">S/ 0.00</span>
+                                    <a th:href="@{/catalog/product/{id}(id=${product.id})}" 
+                                       class="btn btn-outline-primary btn-sm">
+                                        Ver Más
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <a href="/catalog/featured" class="btn btn-primary btn-lg">
+                        <i class="bi bi-star"></i>
+                        Ver Todos los Destacados
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Section -->
+        <div class="container-fluid py-5 bg-light" th:if="${!#lists.isEmpty(categories)}">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-header text-center mb-5">
+                        <h2 class="h1 mb-3">
+                            <i class="bi bi-tags"></i>
+                            Categorías
+                        </h2>
+                        <p class="text-muted">Explora nuestros productos por categoría</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4" th:each="category : ${categories}">
+                    <div class="card category-card h-100">
+                        <div class="card-body text-center">
+                            <div class="category-icon mb-3">
+                                <i class="bi bi-box text-primary" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5 class="card-title" th:text="${category.name}">Nombre de la Categoría</h5>
+                            <p class="card-text text-muted" th:if="${category.description}" th:text="${category.description}">
+                                Descripción de la categoría
+                            </p>
+                            <a th:href="@{/catalog/category/{id}(id=${category.id})}" 
+                               class="btn btn-outline-primary">
+                                <i class="bi bi-arrow-right"></i>
+                                Explorar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action Section -->
+        <div class="container-fluid py-5">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center py-5">
+                            <h2 class="mb-3">¿Listo para explorar?</h2>
+                            <p class="lead mb-4">Descubre nuestra amplia selección de productos de alta calidad</p>
+                            <a href="/catalog" class="btn btn-light btn-lg">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                                Ver Catálogo Completo
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4rem 0;
+        }
+        
+        .min-vh-75 {
+            min-height: 75vh;
+        }
+        
+        .hero-content h1 {
+            color: white;
+        }
+        
+        .hero-content p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .hero-image {
+            text-align: center;
+        }
+        
+        .hero-placeholder {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .section-header {
+            margin-bottom: 3rem;
+        }
+        
+        .featured-product-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid #ffc107;
+            position: relative;
+        }
+        
+        .featured-product-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ffc107, #ff8c00, #ffc107);
+            border-radius: 0.375rem;
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .featured-product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.3);
+        }
+        
+        .product-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e9ecef;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .product-image-placeholder {
+            height: 200px;
+            background-color: #f8f9fa;
+        }
+        
+        .product-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .category-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e9ecef;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .category-icon {
+            margin-bottom: 1rem;
+        }
+    </style>
+</body>
+</html> 

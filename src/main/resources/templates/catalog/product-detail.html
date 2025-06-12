@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/base :: html}">
+<head>
+    <title th:text="${product.name + ' - UTP Web Development'}">Detalles del Producto</title>
+</head>
+<body>
+    <!-- Product Detail Content Fragment -->
+    <div th:fragment="content">
+        <div class="container-fluid py-4">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="/">Inicio</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="/catalog">Catálogo</a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a th:href="@{/catalog/category/{id}(id=${product.category.id})}" 
+                           th:text="${product.category.name}">Categoría</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}">
+                        Producto
+                    </li>
+                </ol>
+            </nav>
+
+            <!-- Product Details -->
+            <div class="row">
+                <!-- Product Image -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card">
+                        <div class="card-body p-0">
+                            <div class="product-detail-image-container">
+                                <img th:if="${product.imageUrl}" th:src="${product.imageUrl}" 
+                                     class="img-fluid product-detail-image" alt="Producto">
+                                <div th:unless="${product.imageUrl}" 
+                                     class="product-detail-image-placeholder d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-image text-muted" style="font-size: 4rem;"></i>
+                                </div>
+                                <span th:if="${product.isFeatured}" class="badge featured-badge">
+                                    <i class="bi bi-star-fill"></i>
+                                    Destacado
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Information -->
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h1 class="h3 mb-3" th:text="${product.name}">Nombre del Producto</h1>
+                            
+                            <!-- Price and Stock -->
+                            <div class="row mb-4">
+                                <div class="col-6">
+                                    <div class="price-display">
+                                        <span class="h2 text-success" th:text="${'S/ ' + product.price}">S/ 0.00</span>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stock-display">
+                                        <span class="badge" 
+                                              th:classappend="${product.stock <= product.lowStockThreshold ? 'bg-warning' : 'bg-success'}"
+                                              th:text="${product.stock > 0 ? 'Stock: ' + product.stock : 'Agotado'}">
+                                            Stock
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product Details -->
+                            <div class="product-details mb-4">
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <strong>Categoría:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="badge bg-info" th:text="${product.category?.name}">Categoría</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3" th:if="${product.barcode}">
+                                    <div class="col-6">
+                                        <strong>Código de Barras:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="text-muted" th:text="${product.barcode}">Código</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-6">
+                                        <strong>Estado:</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        <span class="badge" 
+                                              th:classappend="${product.status == 'ACTIVE' ? 'bg-success' : 'bg-warning'}"
+                                              th:text="${product.status}">
+                                            ACTIVE
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Description -->
+                            <div class="mb-4" th:if="${product.description}">
+                                <h5>Descripción</h5>
+                                <p class="text-muted" th:text="${product.description}">Descripción del producto</p>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-primary btn-lg" 
+                                        th:disabled="${product.stock <= 0}"
+                                        onclick="addToCart()">
+                                    <i class="bi bi-cart-plus"></i>
+                                    <span th:text="${product.stock > 0 ? 'Agregar al Carrito' : 'Producto Agotado'}">
+                                        Agregar al Carrito
+                                    </span>
+                                </button>
+                                <a href="/catalog" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i>
+                                    Volver al Catálogo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Products -->
+            <div class="row mt-5" th:if="${!#lists.isEmpty(relatedProducts)}">
+                <div class="col-12">
+                    <h3 class="mb-4">
+                        <i class="bi bi-grid-3x3-gap"></i>
+                        Productos Relacionados
+                    </h3>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-6 mb-4" 
+                             th:each="relatedProduct : ${relatedProducts}" 
+                             th:if="${relatedProduct.id != product.id}">
+                            <div class="card h-100 product-card">
+                                <div class="product-image-container">
+                                    <img th:if="${relatedProduct.imageUrl}" th:src="${relatedProduct.imageUrl}" 
+                                         class="card-img-top product-image" alt="Producto">
+                                    <div th:unless="${relatedProduct.imageUrl}" 
+                                         class="card-img-top product-image-placeholder d-flex align-items-center justify-content-center">
+                                        <i class="bi bi-image text-muted"></i>
+                                    </div>
+                                    <div class="product-overlay">
+                                        <a th:href="@{/catalog/product/{id}(id=${relatedProduct.id})}" 
+                                           class="btn btn-primary btn-sm">
+                                            <i class="bi bi-eye"></i>
+                                            Ver Detalles
+                                        </a>
+                                    </div>
+                                    <span th:if="${relatedProduct.isFeatured}" class="badge featured-badge">
+                                        <i class="bi bi-star-fill"></i>
+                                        Destacado
+                                    </span>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title" th:text="${relatedProduct.name}">Nombre del Producto</h6>
+                                    <p class="card-text text-muted small" th:text="${relatedProduct.description}">Descripción</p>
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge bg-info" th:text="${relatedProduct.category?.name}">Categoría</span>
+                                            <span class="badge" 
+                                                  th:classappend="${relatedProduct.stock <= relatedProduct.lowStockThreshold ? 'bg-warning' : 'bg-success'}"
+                                                  th:text="${relatedProduct.stock > 0 ? relatedProduct.stock : 'Agotado'}">
+                                                Stock
+                                            </span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="h6 text-success mb-0" th:text="${'S/ ' + relatedProduct.price}">S/ 0.00</span>
+                                            <a th:href="@{/catalog/product/{id}(id=${relatedProduct.id})}" 
+                                               class="btn btn-outline-primary btn-sm">
+                                                Ver Más
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .product-detail-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-detail-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        
+        .product-detail-image-placeholder {
+            width: 100%;
+            height: 400px;
+            background-color: #f8f9fa;
+        }
+        
+        .featured-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, #ffc107, #ff8c00);
+            border: none;
+            font-size: 0.9rem;
+        }
+        
+        .price-display {
+            text-align: center;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 0.5rem;
+        }
+        
+        .stock-display {
+            text-align: center;
+            padding: 1rem;
+        }
+        
+        .product-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #e9ecef;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-image {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .product-image-placeholder {
+            height: 200px;
+            background-color: #f8f9fa;
+        }
+        
+        .product-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .product-card:hover .product-overlay {
+            opacity: 1;
+        }
+        
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+    </style>
+
+    <script>
+        function addToCart() {
+            // TODO: Implement cart functionality
+            alert('Funcionalidad de carrito en desarrollo');
+        }
+    </script>
+</body>
+</html> 

@@ -27,6 +27,10 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Size(max = 500)
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

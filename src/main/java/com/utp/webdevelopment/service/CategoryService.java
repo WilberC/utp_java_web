@@ -40,6 +40,7 @@ public class CategoryService {
         return categoryRepository.findById(id)
                 .map(existingCategory -> {
                     existingCategory.setName(categoryDetails.getName());
+                    existingCategory.setDescription(categoryDetails.getDescription());
                     Category updatedCategory = categoryRepository.save(existingCategory);
                     log.info("Updated category with ID: {}", updatedCategory.getId());
                     return updatedCategory;
