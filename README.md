@@ -1,4 +1,4 @@
-# UTP Web Development Project
+# UTP Mini Market Expresst Project
 
 A Spring Boot web application with Thymeleaf, Bootstrap, JPA, and JWT authentication.
 
