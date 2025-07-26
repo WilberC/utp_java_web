@@ -107,7 +107,7 @@ public class CatalogController {
     public String home(Model model) {
         model.addAttribute("featuredProducts", productService.findFeaturedProducts());
         model.addAttribute("categories", categoryService.findAllCategories());
-        model.addAttribute("title", "UTP Web Development - Inicio");
+        model.addAttribute("title", "Inicio");
         return "home";
     }
 } 
