@@ -59,7 +59,7 @@ Documentación técnica completa del proyecto que incluye:
 - **Mantiene el contexto original**: Se preservó toda la información proporcionada
 - **Completa las secciones faltantes**: Se desarrollaron todos los capítulos y subsecciones
 - **Bibliografía en formato APA 7**: 9 referencias ordenadas alfabéticamente
-- **Diagramas con Mermaid**: Diagramas de clases, casos de uso y modelo de base de datos
+- **Diagramas con PlantUML**: Diagramas de clases, casos de uso y modelo de base de datos
 - **Correspondencia con el proyecto**: Toda la documentación se basa en el código real del proyecto
 
 ### 🔧 Tecnologías Documentadas

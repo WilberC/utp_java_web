@@ -40,13 +40,13 @@ Los diagramas en esta carpeta sirven para:
 
 ## 🔧 Herramientas Utilizadas
 
-- **Mermaid**: Para diagramas incluidos en la documentación Markdown
+- **PlantUML**: Para diagramas incluidos en la documentación Markdown
 - **PlantUML**: Para diagramas más complejos (futuro)
 - **Draw.io**: Para diagramas de arquitectura (futuro)
 
 ## 📝 Notas
 
-- Los diagramas principales están incluidos en `documentacion_proyecto.md`
+- Los diagramas principales están incluidos en `documentacion_proyecto.md` usando PlantUML
 - Esta carpeta está preparada para diagramas adicionales según sea necesario
 - Todos los diagramas deben mantenerse actualizados con el código del proyecto
 

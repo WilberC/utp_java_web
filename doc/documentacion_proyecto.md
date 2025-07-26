@@ -306,140 +306,303 @@ El prototipo del software incluye las siguientes funcionalidades principales:
 
 #### 3.4.1 Diagrama de Clases
 
-```mermaid
-classDiagram
-    class User {
-        +Long id
-        +String email
-        +String password
-        +UserStatus status
-        +LocalDateTime createdAt
-        +LocalDateTime updatedAt
-        +getEmail()
-        +setEmail()
-        +getPassword()
-        +setPassword()
-    }
+```plantuml
+@startuml
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam classFontSize 10
+skinparam classFontName Arial
 
-    class Customer {
-        +String firstName
-        +String lastName
-        +String phone
-        +String address
-        +getFirstName()
-        +setFirstName()
-        +getLastName()
-        +setLastName()
-    }
+abstract class User {
+    -Long id
+    -String email
+    -String password
+    -UserStatus status
+    -LocalDateTime createdAt
+    -LocalDateTime updatedAt
+    +getEmail(): String
+    +setEmail(String email): void
+    +getPassword(): String
+    +setPassword(String password): void
+    +getStatus(): UserStatus
+    +setStatus(UserStatus status): void
+    +getCreatedAt(): LocalDateTime
+    +setCreatedAt(LocalDateTime createdAt): void
+    +getUpdatedAt(): LocalDateTime
+    +setUpdatedAt(LocalDateTime updatedAt): void
+}
 
-    class Product {
-        +Long id
-        +String name
-        +String description
-        +BigDecimal price
-        +Integer stock
-        +Boolean featured
-        +String imageUrl
-        +LocalDateTime createdAt
-        +LocalDateTime updatedAt
-        +getName()
-        +setName()
-        +getPrice()
-        +setPrice()
-        +getStock()
-        +setStock()
-    }
+class Customer {
+    -String firstName
+    -String lastName
+    -String phone
+    -String address
+    +getFirstName(): String
+    +setFirstName(String firstName): void
+    +getLastName(): String
+    +setLastName(String lastName): void
+    +getPhone(): String
+    +setPhone(String phone): void
+    +getAddress(): String
+    +setAddress(String address): void
+}
 
-    class Category {
-        +Long id
-        +String name
-        +String description
-        +String imageUrl
-        +LocalDateTime createdAt
-        +LocalDateTime updatedAt
-        +getName()
-        +setName()
-        +getDescription()
-        +setDescription()
-    }
+class Product {
+    -Long id
+    -String name
+    -String description
+    -BigDecimal price
+    -Integer stock
+    -Boolean featured
+    -String imageUrl
+    -Category category
+    -LocalDateTime createdAt
+    -LocalDateTime updatedAt
+    +getName(): String
+    +setName(String name): void
+    +getDescription(): String
+    +setDescription(String description): void
+    +getPrice(): BigDecimal
+    +setPrice(BigDecimal price): void
+    +getStock(): Integer
+    +setStock(Integer stock): void
+    +isFeatured(): Boolean
+    +setFeatured(Boolean featured): void
+    +getImageUrl(): String
+    +setImageUrl(String imageUrl): void
+    +getCategory(): Category
+    +setCategory(Category category): void
+}
 
-    class Order {
-        +Long id
-        +BigDecimal totalAmount
-        +OrderStatus status
-        +PaymentMethod paymentMethod
-        +LocalDateTime orderDate
-        +LocalDateTime deliveryDate
-        +getTotalAmount()
-        +setTotalAmount()
-        +getStatus()
-        +setStatus()
-    }
+class Category {
+    -Long id
+    -String name
+    -String description
+    -String imageUrl
+    -List<Product> products
+    -LocalDateTime createdAt
+    -LocalDateTime updatedAt
+    +getName(): String
+    +setName(String name): void
+    +getDescription(): String
+    +setDescription(String description): void
+    +getImageUrl(): String
+    +setImageUrl(String imageUrl): void
+    +getProducts(): List<Product>
+    +setProducts(List<Product> products): void
+    +addProduct(Product product): void
+    +removeProduct(Product product): void
+}
 
-    class OrderItem {
-        +Long id
-        +Integer quantity
-        +BigDecimal unitPrice
-        +BigDecimal subtotal
-        +getQuantity()
-        +setQuantity()
-        +getUnitPrice()
-        +setUnitPrice()
-    }
+class Order {
+    -Long id
+    -BigDecimal totalAmount
+    -OrderStatus status
+    -PaymentMethod paymentMethod
+    -Customer customer
+    -List<OrderItem> orderItems
+    -List<PaymentTransaction> transactions
+    -LocalDateTime orderDate
+    -LocalDateTime deliveryDate
+    -LocalDateTime createdAt
+    -LocalDateTime updatedAt
+    +getTotalAmount(): BigDecimal
+    +setTotalAmount(BigDecimal totalAmount): void
+    +getStatus(): OrderStatus
+    +setStatus(OrderStatus status): void
+    +getPaymentMethod(): PaymentMethod
+    +setPaymentMethod(PaymentMethod paymentMethod): void
+    +getCustomer(): Customer
+    +setCustomer(Customer customer): void
+    +getOrderItems(): List<OrderItem>
+    +setOrderItems(List<OrderItem> orderItems): void
+    +addOrderItem(OrderItem item): void
+    +removeOrderItem(OrderItem item): void
+    +calculateTotal(): BigDecimal
+}
 
-    class PaymentTransaction {
-        +Long id
-        +BigDecimal amount
-        +PaymentStatus status
-        +String transactionId
-        +LocalDateTime transactionDate
-        +getAmount()
-        +setAmount()
-        +getStatus()
-        +setStatus()
-    }
+class OrderItem {
+    -Long id
+    -Integer quantity
+    -BigDecimal unitPrice
+    -BigDecimal subtotal
+    -Order order
+    -Product product
+    +getQuantity(): Integer
+    +setQuantity(Integer quantity): void
+    +getUnitPrice(): BigDecimal
+    +setUnitPrice(BigDecimal unitPrice): void
+    +getSubtotal(): BigDecimal
+    +setSubtotal(BigDecimal subtotal): void
+    +getOrder(): Order
+    +setOrder(Order order): void
+    +getProduct(): Product
+    +setProduct(Product product): void
+    +calculateSubtotal(): BigDecimal
+}
 
-    User <|-- Customer
-    Product ||--o{ OrderItem
-    Category ||--o{ Product
-    Customer ||--o{ Order
-    Order ||--o{ OrderItem
-    Order ||--o{ PaymentTransaction
+class PaymentTransaction {
+    -Long id
+    -BigDecimal amount
+    -PaymentStatus status
+    -String transactionId
+    -Order order
+    -LocalDateTime transactionDate
+    -LocalDateTime createdAt
+    +getAmount(): BigDecimal
+    +setAmount(BigDecimal amount): void
+    +getStatus(): PaymentStatus
+    +setStatus(PaymentStatus status): void
+    +getTransactionId(): String
+    +setTransactionId(String transactionId): void
+    +getOrder(): Order
+    +setOrder(Order order): void
+    +getTransactionDate(): LocalDateTime
+    +setTransactionDate(LocalDateTime transactionDate): void
+}
+
+enum UserStatus {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+}
+
+enum OrderStatus {
+    PENDING
+    PROCESSING
+    SHIPPED
+    DELIVERED
+    CANCELLED
+}
+
+enum PaymentMethod {
+    CREDIT_CARD
+    BANK_TRANSFER
+    CASH_ON_DELIVERY
+}
+
+enum PaymentStatus {
+    PENDING
+    COMPLETED
+    FAILED
+    REFUNDED
+}
+
+' Relationships
+User <|-- Customer
+Category ||--o{ Product : contains
+Customer ||--o{ Order : places
+Order ||--o{ OrderItem : contains
+Product ||--o{ OrderItem : included_in
+Order ||--o{ PaymentTransaction : has
+
+@enduml
 ```
 
 #### 3.4.2 Casos de Uso
 
-```mermaid
-graph TD
-    A[Cliente] --> B[Registrarse]
-    A --> C[Iniciar Sesión]
-    A --> D[Buscar Productos]
-    A --> E[Ver Detalles de Producto]
-    A --> F[Agregar al Carrito]
-    A --> G[Realizar Pedido]
-    A --> H[Ver Estado de Pedido]
+```plantuml
+@startuml
+!theme plain
+skinparam usecaseFontSize 10
+skinparam usecaseFontName Arial
+skinparam actorFontSize 10
+skinparam actorFontName Arial
+
+left to right direction
+
+actor Cliente as C
+actor Administrador as A
+
+rectangle "Sistema E-Commerce MiniMarket Express" {
     
-    I[Administrador] --> J[Gestionar Usuarios]
-    I --> K[Gestionar Productos]
-    I --> L[Gestionar Categorías]
-    I --> M[Gestionar Pedidos]
-    I --> N[Ver Reportes]
-    I --> O[Exportar Datos]
+    package "Gestión de Usuarios" {
+        usecase "Registrarse" as UC1
+        usecase "Iniciar Sesión" as UC2
+        usecase "Gestionar Perfil" as UC3
+        usecase "Gestionar Usuarios" as UC4
+    }
     
-    B --> P[Sistema de Autenticación]
-    C --> P
-    D --> Q[Catálogo de Productos]
-    E --> Q
-    F --> R[Carrito de Compras]
-    G --> S[Sistema de Pagos]
-    H --> T[Seguimiento de Pedidos]
+    package "Catálogo de Productos" {
+        usecase "Buscar Productos" as UC5
+        usecase "Ver Detalles de Producto" as UC6
+        usecase "Filtrar por Categoría" as UC7
+        usecase "Gestionar Productos" as UC8
+        usecase "Gestionar Categorías" as UC9
+    }
     
-    J --> U[Panel de Administración]
-    K --> U
-    L --> U
-    M --> U
-    N --> U
-    O --> U
+    package "Proceso de Compra" {
+        usecase "Agregar al Carrito" as UC10
+        usecase "Ver Carrito" as UC11
+        usecase "Realizar Pedido" as UC12
+        usecase "Seleccionar Método de Pago" as UC13
+        usecase "Confirmar Compra" as UC14
+    }
+    
+    package "Gestión de Pedidos" {
+        usecase "Ver Estado de Pedido" as UC15
+        usecase "Gestionar Pedidos" as UC16
+        usecase "Actualizar Estado" as UC17
+        usecase "Cancelar Pedido" as UC18
+    }
+    
+    package "Reportes y Analytics" {
+        usecase "Ver Reportes de Ventas" as UC19
+        usecase "Ver Reportes de Inventario" as UC20
+        usecase "Ver Reportes de Clientes" as UC21
+        usecase "Exportar Datos" as UC22
+    }
+    
+    package "Panel Administrativo" {
+        usecase "Acceder al Dashboard" as UC23
+        usecase "Ver Estadísticas" as UC24
+        usecase "Gestionar Configuraciones" as UC25
+    }
+}
+
+' Cliente relationships
+C --> UC1
+C --> UC2
+C --> UC3
+C --> UC5
+C --> UC6
+C --> UC7
+C --> UC10
+C --> UC11
+C --> UC12
+C --> UC13
+C --> UC14
+C --> UC15
+C --> UC18
+
+' Administrador relationships
+A --> UC2
+A --> UC4
+A --> UC8
+A --> UC9
+A --> UC16
+A --> UC17
+A --> UC19
+A --> UC20
+A --> UC21
+A --> UC22
+A --> UC23
+A --> UC24
+A --> UC25
+
+' Include relationships
+UC12 ..> UC13 : <<include>>
+UC12 ..> UC14 : <<include>>
+UC8 ..> UC9 : <<include>>
+UC16 ..> UC17 : <<include>>
+
+' Extend relationships
+UC5 ..> UC7 : <<extend>>
+UC6 ..> UC5 : <<extend>>
+UC10 ..> UC6 : <<extend>>
+UC11 ..> UC10 : <<extend>>
+
+@enduml
 ```
 
 ### 3.5 Diagrama de la Base de Datos
@@ -457,84 +620,99 @@ El modelo conceptual representa las entidades principales del sistema y sus rela
 
 #### 3.5.2 Modelo Lógico
 
-```mermaid
-erDiagram
-    USERS {
-        bigint id PK
-        varchar email UK
-        varchar password
-        enum status
-        timestamp created_at
-        timestamp updated_at
-    }
-    
-    CUSTOMERS {
-        bigint id PK
-        varchar first_name
-        varchar last_name
-        varchar phone
-        text address
-    }
-    
-    CATEGORIES {
-        bigint id PK
-        varchar name
-        text description
-        varchar image_url
-        timestamp created_at
-        timestamp updated_at
-    }
-    
-    PRODUCTS {
-        bigint id PK
-        varchar name
-        text description
-        decimal price
-        int stock
-        boolean featured
-        varchar image_url
-        bigint category_id FK
-        timestamp created_at
-        timestamp updated_at
-    }
-    
-    ORDERS {
-        bigint id PK
-        decimal total_amount
-        enum status
-        enum payment_method
-        bigint customer_id FK
-        timestamp order_date
-        timestamp delivery_date
-        timestamp created_at
-        timestamp updated_at
-    }
-    
-    ORDER_ITEMS {
-        bigint id PK
-        int quantity
-        decimal unit_price
-        decimal subtotal
-        bigint order_id FK
-        bigint product_id FK
-    }
-    
-    PAYMENT_TRANSACTIONS {
-        bigint id PK
-        decimal amount
-        enum status
-        varchar transaction_id
-        bigint order_id FK
-        timestamp transaction_date
-        timestamp created_at
-    }
-    
-    USERS ||--|| CUSTOMERS : "extends"
-    CATEGORIES ||--o{ PRODUCTS : "contains"
-    CUSTOMERS ||--o{ ORDERS : "places"
-    ORDERS ||--o{ ORDER_ITEMS : "contains"
-    PRODUCTS ||--o{ ORDER_ITEMS : "included_in"
-    ORDERS ||--o{ PAYMENT_TRANSACTIONS : "has"
+```plantuml
+@startuml
+!theme plain
+skinparam entityFontSize 10
+skinparam entityFontName Arial
+skinparam linetype ortho
+
+entity "USERS" as users {
+    * id : bigint <<PK>>
+    --
+    * email : varchar(255) <<UK>>
+    * password : varchar(255)
+    * status : enum
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "CUSTOMERS" as customers {
+    * id : bigint <<PK>>
+    --
+    * first_name : varchar(100)
+    * last_name : varchar(100)
+    phone : varchar(20)
+    address : text
+}
+
+entity "CATEGORIES" as categories {
+    * id : bigint <<PK>>
+    --
+    * name : varchar(100) <<UK>>
+    description : text
+    image_url : varchar(500)
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "PRODUCTS" as products {
+    * id : bigint <<PK>>
+    --
+    * name : varchar(255)
+    description : text
+    * price : decimal(10,2)
+    * stock : int
+    featured : boolean
+    image_url : varchar(500)
+    * category_id : bigint <<FK>>
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "ORDERS" as orders {
+    * id : bigint <<PK>>
+    --
+    * total_amount : decimal(10,2)
+    * status : enum
+    payment_method : enum
+    * customer_id : bigint <<FK>>
+    order_date : timestamp
+    delivery_date : timestamp
+    created_at : timestamp
+    updated_at : timestamp
+}
+
+entity "ORDER_ITEMS" as order_items {
+    * id : bigint <<PK>>
+    --
+    * quantity : int
+    * unit_price : decimal(10,2)
+    * subtotal : decimal(10,2)
+    * order_id : bigint <<FK>>
+    * product_id : bigint <<FK>>
+}
+
+entity "PAYMENT_TRANSACTIONS" as payment_transactions {
+    * id : bigint <<PK>>
+    --
+    * amount : decimal(10,2)
+    * status : enum
+    transaction_id : varchar(100) <<UK>>
+    * order_id : bigint <<FK>>
+    transaction_date : timestamp
+    created_at : timestamp
+}
+
+' Relationships
+users ||--|| customers : "extends"
+categories ||--o{ products : "contains"
+customers ||--o{ orders : "places"
+orders ||--o{ order_items : "contains"
+products ||--o{ order_items : "included_in"
+orders ||--o{ payment_transactions : "has"
+
+@enduml
 ```
 
 #### 3.5.3 Modelo Físico
